@@ -13,7 +13,6 @@ namespace MyCRM_Online.Db
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //string dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.sqlite");
             optionsBuilder.UseSqlite($"Data Source={dbPath}");
         }
 
