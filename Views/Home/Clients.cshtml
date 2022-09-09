@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "Clients";
+}
+
+<div class="text-center">
+    <h2 class="display-4">Клиенты</h2>
+
+    <table class="table table-striped">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Добавлен</th>
+                <th scope="col">Имя</th>
+                <th scope="col">Ник</th>
+                <th scope="col">Телефон</th>
+                <th scope="col">Email</th>
+                <th scope="col">Страна</th>
+                <th scope="col">Город</th>
+                <th scope="col">Доставка</th>
+                <th scope="col">Отделение</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var client in ViewBag.Clients)
+            {
+                <tr>
+                    <td>@client.Id</td>
+                    <td>@client.Date</td>
+                    <td>@client.Name</td>
+                    <td>@client.Nickname</td>
+                    <td>@client.Phone</td>
+                    <td>@client.Email</td>
+
+                    <td>@if (client.Country != null)
+                    {
+                        @client.Country.Name
+                    }</td>
+
+                    <td>@client.City</td>
+
+                    <td>@if (client.ShippingMethod != null)
+                    {
+                        @client.ShippingMethod.Name
+                    }</td>
+
+                    <td>@client.PostalCode</td>
+                </tr>
+            }
+        </tbody>       
+    </table>
+</div>
