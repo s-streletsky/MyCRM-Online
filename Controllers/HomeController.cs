@@ -49,12 +49,6 @@ namespace MyCRM_Online.Controllers
             return RedirectToAction("Clients");
         }
 
-        public IActionResult Export()
-        {
-            RepoBase.InitializeDatabase();
-            return View();
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
