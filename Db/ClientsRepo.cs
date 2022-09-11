@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MyCRM_Online.Db
 {
-    public class ClientsRepo : RepoBase
+    public class ClientsRepo
     {
         public IEnumerable<Client> GetAll()
         {
