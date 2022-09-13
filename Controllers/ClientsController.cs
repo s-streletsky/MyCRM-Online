@@ -30,22 +30,52 @@ namespace MyCRM_Online.Controllers
         //    return View();
         //}
 
-        public IActionResult Edit()
+        public IActionResult Create()
         {
-            var countries = databaseContext.Countries.ToList();
-            var shippingMethods = databaseContext.ShippingMethods.ToList();
-            ViewBag.Countries = countries;
-            ViewBag.ShippingMethods = shippingMethods;
+            GetCountriesAndShippingMethodsLists();
 
             return View(); 
         }
 
         [HttpPost]
-        public IActionResult AddClient([FromForm]Client client)
+        public IActionResult Create([FromForm]Client client)
         {
             client.Date = DateTime.Now;
             databaseContext.Clients.Add(client);
             databaseContext.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Edit(int? id)
+        {
+            GetCountriesAndShippingMethodsLists();
+
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            var client = databaseContext.Clients.Find(id);
+
+            if (client == null)
+            {
+                return NotFound();
+            }
+            return View(client);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(Client client)
+        {
+            var temp = client;
+            if (ModelState.IsValid)
+            {
+                databaseContext.Clients.Update(client);
+                databaseContext.SaveChanges();
+                //TempData["ResultOk"] = "Data Updated Successfully !";
+                return RedirectToAction("Index");
+            }
 
             return RedirectToAction("Index");
         }
@@ -58,6 +88,14 @@ namespace MyCRM_Online.Controllers
             databaseContext.SaveChanges();
 
             return RedirectToAction("Index");
+        }
+
+        private void GetCountriesAndShippingMethodsLists()
+        {
+            var countries = databaseContext.Countries.ToList();
+            var shippingMethods = databaseContext.ShippingMethods.ToList();
+            ViewBag.Countries = countries;
+            ViewBag.ShippingMethods = shippingMethods;
         }
     }
 }

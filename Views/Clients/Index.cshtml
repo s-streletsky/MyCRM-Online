@@ -4,7 +4,11 @@
 
 <div class="text-center">
     <h2 class="display-4">Клиенты</h2>
-
+    <div class="button-panel">
+        <a class="btn btn-primary" asp-action="Create">Добавить</a>
+    </div>
+    
+    
     <table class="table table-striped">
         <thead class="thead-light">
             <tr>
@@ -45,13 +49,18 @@
                     }</td>
 
                     <td>@client.PostalCode</td>
-                    <td>Edit | Delete</td>
                     <td>
-                        @using (Html.BeginForm(FormMethod.Post))
-                        {
-                            <input type="hidden" name="id" value="@client.Id" />
-                            <input type="submit" value="Delete" asp-action="Delete" />
-                        }
+                        <div>
+                            @*<a asp-controller="Employee" asp-action="Edit" asp-route-id="@item.Id" class=" btn btn-sm btn-primary"><i class="bi bi-pencil-square"></i>Edit</a>*@
+
+                            @using (Html.BeginForm(FormMethod.Post))
+                            {
+                                <input type="hidden" name="id" value="@client.Id" />
+
+                                <a class="btn btn-secondary btn-sm" asp-route-id="@client.Id" asp-action="Edit">Изменить</a>
+                                <input class="btn btn-danger btn-sm" type="submit" value="Удалить" asp-action="Delete" />
+                            }
+                        </div>                        
                     </td>
                 </tr>
             }

@@ -17,18 +17,19 @@ body {
   margin-bottom: 60px;
 }
 
-/*th, td {
+.client-form {
     text-align: left;
 }
-
-table, tr {
-    width: 100%;
-    border: 1px solid;
-}*/
 
 .form-group {
-    text-align: left;
     width: 50%;
-    margin: 5px 0px 5px 0px  ;
+    margin: 10px 0px 10px 0px;
 }
 
+.button-panel {
+    text-align: left;
+}
+
+th, td {
+    text-align: left;
+}

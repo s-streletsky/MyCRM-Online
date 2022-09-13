@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.Metrics;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.Metrics;
 
 namespace MyCRM_Online.Models
 {
@@ -6,6 +7,8 @@ namespace MyCRM_Online.Models
     {
         public int? Id { get; set; }
         public DateTime Date { get; set; }
+
+        [Required]
         public string Name { get; set; }
         public string? Nickname { get; set; }
         public string? Phone { get; set; }

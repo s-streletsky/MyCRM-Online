@@ -1,18 +1,18 @@
 ﻿@{
-    ViewData["Title"] = "Edit Client";
+    ViewData["Title"] = "Create Client";
 }
 @model MyCRM_Online.Models.Client
 
 <div class="text-center">
-    <h1 class="display-4">Изменить данные клиента</h1>
+    <h1 class="display-4">Новый клиент</h1>
 
-    <form class="client-form" asp-antiforgery="true" asp-action="Edit" asp-controller="Clients">
+    <form class="client-form" asp-antiforgery="true" asp-action="Create" asp-controller="Clients">
         <div>
             <div class="validation" asp-validation-summary="ModelOnly"></div>
             <div class="form-group">
                 <label asp-for="Name">* Фамилия, Имя</label>
-                <input class="form-control" type="text" asp-for="Name" />
-                <span style="color:red" asp-validation-for="Name"></span>                
+                <input class="form-control" type="text" asp-for="Name" placeholder="Иванов Иван" />
+                <span style="color:red" asp-validation-for="Name"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Nickname">Ник (nickname)</label>
@@ -20,7 +20,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Phone">Телефон</label>
-                <input class="form-control" type="text" asp-for="Phone" />
+                <input class="form-control" type="text" asp-for="Phone" placeholder="048 777 55 33" />
             </div>
             <div class="form-group">
                 <label asp-for="Email">Email</label>
@@ -29,7 +29,7 @@
             <div class="form-group">
                 <label asp-for="Country">Страна</label>
                 <select class="form-control" asp-for="CountryId">
-                    <option value="@null">-- Выбрать --</option>
+                    <option>-- Выбрать --</option>
                     @foreach (var country in ViewBag.Countries)
                     {
                         <option value="@country.Id">@country.Name</option>
@@ -47,7 +47,7 @@
             <div class="form-group">
                 <label asp-for="ShippingMethod">Способ доставки</label>
                 <select class="form-control" asp-for="ShippingMethodId">
-                    <option value="@null">-- Выбрать --</option>
+                    <option>-- Выбрать --</option>
                     @foreach (var shippingMethod in ViewBag.ShippingMethods)
                     {
                         <option value="@shippingMethod.Id">@shippingMethod.Name</option>
@@ -63,14 +63,14 @@
                 <input class="form-control" type="text" asp-for="Notes" />
             </div>
             <div class="form-group">
-                <input class="btn btn-primary" type="submit" value="Сохранить" />
+                <input class="btn btn-primary" type="submit" value="Добавить" />
             </div>
         </div>
-    </form>    
+    </form>
 </div>
 
 @section Scripts{
     @{
         <partial name="_ValidationScriptsPartial" />
     }
-}
+    }
