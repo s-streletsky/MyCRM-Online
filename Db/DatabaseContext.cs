@@ -33,10 +33,13 @@ namespace MyCRM_Online.Db
         {
             if (File.Exists(dbPath)) { return; }
 
-            using (var db = new DatabaseContext())
+            using (var databaseContext = new DatabaseContext())
             {
                 var dbInitScript = File.ReadAllText("./Db/db.init.sql", Encoding.UTF8);
-                db.Database.ExecuteSqlRaw(dbInitScript);
+                databaseContext.Database.ExecuteSqlRaw(dbInitScript);
+
+                //var dbDefaultData = File.ReadAllText("./Db/db.data.sql", Encoding.UTF8);
+                //databaseContext.Database.ExecuteSqlRaw(dbDefaultData);
             }
         }
     }

@@ -5,7 +5,7 @@
 <div class="text-center">
     <h1 class="display-4">Новый клиент</h1>
 
-    <form asp-controller="Home" asp-action="AddClient" method="post">
+    <form asp-controller="Clients" asp-action="AddClient" method="post">
         <div class="form-group row">
             <label class="col-sm-3 col-form-label">ФИО</label>
             <div class="col-sm-8">
@@ -84,58 +84,5 @@
             </div>
             
         </div>
-
-@*        <table>
-            <tr>
-                <td>Имя:</td>
-                <td><input name="Name" type="text" /></td>
-            </tr>
-            <tr>
-                <td>Ник:</td>
-                <td><input name="Nickname" type="text" /></td>
-            </tr>
-            <tr>
-                <td>Телефон:</td>
-                <td><input name="Phone" type="text" /></td>
-            </tr>
-            <tr>
-                <td>Email:</td>
-                <td><input name="Email" type="text" /></td>
-            </tr>
-            <tr>
-                <td>Страна:</td>
-                <td>
-                    <select id="countries" name="CountryId">
-                        @foreach (var country in ViewBag.Countries)
-                        {
-                            <option value="@country.Id">@country.Name</option>
-                        }
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>Город:</td>
-                <td><input name="City" type="text" /></td>
-            </tr>
-            <tr>
-                <td>Адрес:</td>
-                <td><input name="Address" type="text" /></td>
-            </tr>
-            <tr>
-                <td>Доставка:</td>
-                <td><input name="ShippingMethod" type="text" /></td>
-            </tr>
-            <tr>
-                <td>Отделение:</td>
-                <td><input name="PostalCode" type="text" /></td>
-            </tr>
-            <tr>
-                <td>Примечания:</td>
-                <td><input name="Notes" type="text" /></td>
-            </tr>
-            <tr>
-        <td colspan="2"><input class="btn btn-primary" type="submit" value="submit" /></td>
-            </tr>
-        </table>*@
     </form>   
 </div>

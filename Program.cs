@@ -2,8 +2,12 @@ using MyCRM_Online.Db;
 using Microsoft.EntityFrameworkCore;
 using System.Configuration;
 using System;
+using Microsoft.Extensions.DependencyModel;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.TryAddScoped<DatabaseContext>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
