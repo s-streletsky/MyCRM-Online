@@ -25,11 +25,6 @@ namespace MyCRM_Online.Controllers
             return View();
         }
 
-        //public IActionResult Add()
-        //{
-        //    return View();
-        //}
-
         public IActionResult Create()
         {
             GetCountriesAndShippingMethodsLists();
@@ -73,7 +68,7 @@ namespace MyCRM_Online.Controllers
             {
                 databaseContext.Clients.Update(client);
                 databaseContext.SaveChanges();
-                //TempData["ResultOk"] = "Data Updated Successfully !";
+
                 return RedirectToAction("Index");
             }
 
@@ -82,7 +77,7 @@ namespace MyCRM_Online.Controllers
 
         [Route("")]
         [HttpPost]
-        public IActionResult Delete([FromForm] int? id)
+        public IActionResult Delete([FromForm]int? id)
         {
             databaseContext.Clients.Remove(new Client() { Id = id });
             databaseContext.SaveChanges();

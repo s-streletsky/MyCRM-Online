@@ -8,7 +8,6 @@
         <a class="btn btn-primary" asp-action="Create">Добавить</a>
     </div>
     
-    
     <table class="table table-striped">
         <thead class="thead-light">
             <tr>
@@ -50,20 +49,51 @@
 
                     <td>@client.PostalCode</td>
                     <td>
-                        <div>
-                            @*<a asp-controller="Employee" asp-action="Edit" asp-route-id="@item.Id" class=" btn btn-sm btn-primary"><i class="bi bi-pencil-square"></i>Edit</a>*@
+                        @using (Html.BeginForm(FormMethod.Post))
+                        {
+                            <a class="btn btn-secondary btn-sm" asp-route-id="@client.Id" asp-action="Edit">Изменить</a>
 
-                            @using (Html.BeginForm(FormMethod.Post))
-                            {
-                                <input type="hidden" name="id" value="@client.Id" />
-
-                                <a class="btn btn-secondary btn-sm" asp-route-id="@client.Id" asp-action="Edit">Изменить</a>
-                                <input class="btn btn-danger btn-sm" type="submit" value="Удалить" asp-action="Delete" />
-                            }
-                        </div>                        
+                            <button type="button" id="modalButton" class="btn btn-danger btn-sm" data-client="@client.Id" data-bs-toggle="modal" data-bs-target="#deletionModal">
+                                Удалить
+                            </button>                            
+                        }                        
                     </td>
                 </tr>
             }
         </tbody>       
     </table>
+
+    <div class="modal fade" id="deletionModal" tabindex="-1" aria-labelledby="deletionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Подтвердить действие</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p style="text-align:left" class="modal-body-message"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    @using (Html.BeginForm(FormMethod.Post))
+                    {
+                        <input class="client-id" type="hidden" name="id" />
+                        <input class="btn btn-danger" type="submit" value="Удалить" asp-action="Delete" />
+                    }                                      
+                </div>
+            </div>
+        </div>
+    </div>   
 </div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $('#deletionModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget)
+            var clientId = button.data('client')
+            var modal = $(this)
+            modal.find('.modal-body-message').text('Клиент №' + clientId + '. Удалить?')
+            modal.find('.client-id').val(clientId)
+        })
+    </script>
+}
