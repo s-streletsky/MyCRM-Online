@@ -53,7 +53,7 @@
                         {
                             <a class="btn btn-secondary btn-sm" asp-route-id="@client.Id" asp-action="Edit">Изменить</a>
 
-                            <button type="button" id="modalButton" class="btn btn-danger btn-sm" data-client="@client.Id" data-bs-toggle="modal" data-bs-target="#deletionModal">
+                            <button type="button" id="modalButton" class="btn btn-danger btn-sm" data-client-id="@client.Id" data-client-name="@client.Name" data-bs-toggle="modal" data-bs-target="#deletionModal">
                                 Удалить
                             </button>                            
                         }                        
@@ -90,9 +90,10 @@
     <script type="text/javascript">
         $('#deletionModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget)
-            var clientId = button.data('client')
+            var clientId = button.data('client-id')
+            var clientName = button.data('client-name')
             var modal = $(this)
-            modal.find('.modal-body-message').text('Клиент №' + clientId + '. Удалить?')
+            modal.find('.modal-body-message').text('Клиент: ' + clientName + '. Удалить?')
             modal.find('.client-id').val(clientId)
         })
     </script>
