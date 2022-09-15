@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using MyCRM_Online.Db;
 using MyCRM_Online.Models;
 using System.Diagnostics;
@@ -8,12 +9,12 @@ namespace MyCRM_Online.Controllers
 {
     public class ClientsController : Controller
     {
-        private readonly ILogger<ClientsController> _logger;
+        private readonly ILogger<ClientsController> logger;
         readonly DatabaseContext databaseContext;
 
         public ClientsController(ILogger<ClientsController> logger, DatabaseContext databaseContext)
         {
-            _logger = logger;
+            this.logger = logger;
             this.databaseContext = databaseContext;
         }
 

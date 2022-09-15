@@ -1,27 +1,31 @@
-﻿@{
-    ViewData["Title"] = "Clients";
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer
+
+@{
+    ViewData["Title"] = @Localizer["Title"];
 }
 
 <div class="text-center">
-    <h2 class="display-4">Клиенты</h2>
+    <h2 class="display-4">@Localizer["Title"]</h2>
     <div class="button-panel">
-        <a class="btn btn-primary" asp-action="Create">Добавить</a>
+        <a class="btn btn-primary" asp-action="Create">@SharedLocalizer["Create"]</a>
     </div>
     
     <table class="table table-striped">
         <thead class="thead-light">
             <tr>
                 <th scope="col">Id</th>
-                <th scope="col">Добавлен</th>
-                <th scope="col">Имя</th>
-                <th scope="col">Ник</th>
-                <th scope="col">Телефон</th>
+                <th scope="col">@SharedLocalizer["Added"]</th>
+                <th scope="col">@SharedLocalizer["Name"]</th>
+                <th scope="col">@SharedLocalizer["Nickname"]</th>
+                <th scope="col">@SharedLocalizer["Phone"]</th>
                 <th scope="col">Email</th>
-                <th scope="col">Страна</th>
-                <th scope="col">Город</th>
-                <th scope="col">Доставка</th>
-                <th scope="col">Отделение</th>
-                <th scope="col">Действия</th>
+                <th scope="col">@SharedLocalizer["Country"]</th>
+                <th scope="col">@SharedLocalizer["City"]</th>
+                <th scope="col">@SharedLocalizer["ShippingMethod"]</th>
+                <th scope="col">@SharedLocalizer["PostalCode"]</th>
+                <th scope="col">@SharedLocalizer["Actions"]</th>
             </tr>
         </thead>
         <tbody>
@@ -51,10 +55,10 @@
                     <td>
                         @using (Html.BeginForm(FormMethod.Post))
                         {
-                            <a class="btn btn-secondary btn-sm" asp-route-id="@client.Id" asp-action="Edit">Изменить</a>
+                            <a class="btn btn-secondary btn-sm" asp-route-id="@client.Id" asp-action="Edit">@SharedLocalizer["Edit"]</a>
 
                             <button type="button" id="modalButton" class="btn btn-danger btn-sm" data-client-id="@client.Id" data-client-name="@client.Name" data-bs-toggle="modal" data-bs-target="#deletionModal">
-                                Удалить
+                                @SharedLocalizer["Delete"]
                             </button>                            
                         }                        
                     </td>

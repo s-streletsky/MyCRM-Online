@@ -1,25 +1,29 @@
-﻿@{
-    ViewData["Title"] = "Edit Client";
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer
+
+@{
+    ViewData["Title"] = @Localizer["Title"];
 }
 @model MyCRM_Online.Models.Client
 
 <div class="text-center">
-    <h1 class="display-4">Изменить данные клиента</h1>
+    <h1 class="display-4">@Localizer["Title"]</h1>
 
     <form class="client-form" asp-antiforgery="true" asp-action="Edit" asp-controller="Clients">
         <div>
             <div class="validation" asp-validation-summary="ModelOnly"></div>
             <div class="form-group">
-                <label asp-for="Name">* Фамилия, Имя</label>
+                <label asp-for="Name">* @SharedLocalizer["Name"]</label>
                 <input class="form-control" type="text" asp-for="Name" />
                 <span style="color:red" asp-validation-for="Name"></span>                
             </div>
             <div class="form-group">
-                <label asp-for="Nickname">Ник (nickname)</label>
+                <label asp-for="Nickname">@SharedLocalizer["Nickname"]</label>
                 <input class="form-control" type="text" asp-for="Nickname" />
             </div>
             <div class="form-group">
-                <label asp-for="Phone">Телефон</label>
+                <label asp-for="Phone">@SharedLocalizer["Phone"]</label>
                 <input class="form-control" type="text" asp-for="Phone" />
             </div>
             <div class="form-group">
@@ -27,9 +31,9 @@
                 <input class="form-control" type="text" asp-for="Email" />
             </div>
             <div class="form-group">
-                <label asp-for="Country">Страна</label>
+                <label asp-for="Country">@SharedLocalizer["Country"]</label>
                 <select class="form-control" asp-for="CountryId">
-                    <option value="@null">-- Выбрать --</option>
+                    <option value="@null">@SharedLocalizer["Select"]</option>
                     @foreach (var country in ViewBag.Countries)
                     {
                         <option value="@country.Id">@country.Name</option>
@@ -37,17 +41,17 @@
                 </select>
             </div>
             <div class="form-group">
-                <label asp-for="City">Город</label>
+                <label asp-for="City">@SharedLocalizer["City"]</label>
                 <input class="form-control" type="text" asp-for="City" />
             </div>
             <div class="form-group">
-                <label asp-for="Address">Адрес</label>
+                <label asp-for="Address">@SharedLocalizer["Address"]</label>
                 <input class="form-control" type="text" asp-for="Address" />
             </div>
             <div class="form-group">
-                <label asp-for="ShippingMethod">Способ доставки</label>
+                <label asp-for="ShippingMethod">@SharedLocalizer["ShippingMethod"]</label>
                 <select class="form-control" asp-for="ShippingMethodId">
-                    <option value="@null">-- Выбрать --</option>
+                    <option value="@null">@SharedLocalizer["Select"]</option>
                     @foreach (var shippingMethod in ViewBag.ShippingMethods)
                     {
                         <option value="@shippingMethod.Id">@shippingMethod.Name</option>
@@ -55,15 +59,15 @@
                 </select>
             </div>
             <div class="form-group">
-                <label asp-for="PostalCode">Отделение</label>
+                <label asp-for="PostalCode">@SharedLocalizer["PostalCode"]</label>
                 <input class="form-control" type="text" asp-for="PostalCode" />
             </div>
             <div class="form-group">
-                <label asp-for="Notes">Примечания</label>
+                <label asp-for="Notes">@SharedLocalizer["Notes"]</label>
                 <input class="form-control" type="text" asp-for="Notes" />
             </div>
             <div class="form-group">
-                <input class="btn btn-primary" type="submit" value="Сохранить" />
+                <input class="btn btn-primary" type="submit" value="@SharedLocalizer["Save"]" />
             </div>
         </div>
     </form>    
