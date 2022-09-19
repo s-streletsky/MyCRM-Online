@@ -4,15 +4,16 @@ using System.Text;
 
 namespace MyCRM_Online.Db
 {
-    public class DatabaseContext : DbContext
+    public class DataContext : DbContext
     {
         readonly static string dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.sqlite");
 
+        public DbSet<User> Users { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<ShippingMethod> ShippingMethods { get; set; }
 
-        static DatabaseContext()
+        static DataContext()
         {
             InitializeDatabase();
         }
@@ -33,7 +34,7 @@ namespace MyCRM_Online.Db
         {
             if (File.Exists(dbPath)) { return; }
 
-            using (var databaseContext = new DatabaseContext())
+            using (var databaseContext = new DataContext())
             {
                 var dbInitScript = File.ReadAllText("./Db/db.init.sql", Encoding.UTF8);
                 databaseContext.Database.ExecuteSqlRaw(dbInitScript);

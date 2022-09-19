@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Localization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using MyCRM_Online.Models;
 using System.Diagnostics;
@@ -7,6 +8,7 @@ namespace MyCRM_Online.Controllers
 {
     public class HomeController : Controller
     {
+        [Authorize]
         public IActionResult Index()
         {
             return View();

@@ -71,18 +71,18 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Подтвердить действие</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">@SharedLocalizer["ConfirmDeletion"]</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <p style="text-align:left" class="modal-body-message"></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
                     @using (Html.BeginForm(FormMethod.Post))
                     {
                         <input class="client-id" type="hidden" name="id" />
-                        <input class="btn btn-danger" type="submit" value="Удалить" asp-action="Delete" />
+                        <input class="btn btn-danger" type="submit" value="@SharedLocalizer["Delete"]" asp-action="Delete" />
                     }                                      
                 </div>
             </div>
@@ -92,12 +92,19 @@
 
 @section Scripts{
     <script type="text/javascript">
+        let client = {
+            localized: '@SharedLocalizer["Client"]'
+        }
+        let deletePermanently = {
+            localized: '@SharedLocalizer["DeletePermanently"]'
+        }
+
         $('#deletionModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget)
             var clientId = button.data('client-id')
             var clientName = button.data('client-name')
             var modal = $(this)
-            modal.find('.modal-body-message').text('Клиент: ' + clientName + '. Удалить?')
+            modal.find('.modal-body-message').text(client.localized + ': ' + clientName + '. ' + deletePermanently.localized + '?')
             modal.find('.client-id').val(clientId)
         })
     </script>

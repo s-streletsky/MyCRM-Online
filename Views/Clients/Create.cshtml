@@ -31,7 +31,7 @@
                 <input class="form-control" type="text" asp-for="Email" />
             </div>
             <div class="form-group">
-                <label asp-for="Country">@SharedLocalizer["Counrty"]</label>
+                <label asp-for="Country">@SharedLocalizer["Country"]</label>
                 <select class="form-control" asp-for="CountryId">
                     <option>@SharedLocalizer["Select"]</option>
                     @foreach (var country in ViewBag.Countries)

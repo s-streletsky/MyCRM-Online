@@ -126,4 +126,7 @@
   <data name="Language" xml:space="preserve">
     <value>Language</value>
   </data>
+  <data name="LogOut" xml:space="preserve">
+    <value>Log Out</value>
+  </data>
 </root>

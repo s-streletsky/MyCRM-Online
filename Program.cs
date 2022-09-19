@@ -1,18 +1,49 @@
 using MyCRM_Online.Db;
 using Microsoft.EntityFrameworkCore;
-using System.Configuration;
 using System;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using MyCRM_Online;
+using Microsoft.AspNetCore.Identity;
+using MyCRM_Online.Models;
+using System.Configuration;
+using System.Data.SQLite;
+using Microsoft.Data.Sqlite;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.TryAddScoped<DatabaseContext>();
+builder.Services.AddAutoMapper(typeof(AppMappingProfile));
+builder.Services.TryAddScoped<DataContext>();
+
+builder.Services
+    .AddDbContext<UsersContext>(options => {
+        var connectionString = builder.Configuration.GetConnectionString("UsersDbConnection");
+        var connectionBuilder = new SQLiteConnectionStringBuilder(connectionString);
+        connectionBuilder.DataSource = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, connectionBuilder.DataSource);
+        options.UseSqlite(connectionBuilder.ToString());
+    });
+
+builder.Services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<UsersContext>();
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
+                })
+                .AddGoogle(googleOptions =>
+                {
+                    googleOptions.ClientId = "291722074936-iinu1nr7984iiakpbccepu1pmm99845r.apps.googleusercontent.com";
+                    googleOptions.ClientSecret = "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";
+                    googleOptions.SignInScheme = IdentityConstants.ExternalScheme;
+                });
 
 // Add services to the container.
 builder.Services.AddControllersWithViews()
@@ -49,6 +80,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

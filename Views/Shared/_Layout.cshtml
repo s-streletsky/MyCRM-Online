@@ -33,24 +33,30 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Home"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Clients" asp-action="Index">@Localizer["Clients"]</a>
-                        </li>
-                    </ul>
-                    <div>
-                        <form asp-controller="Home" asp-action="SetLanguage" style="margin-top:20px;"
-                              asp-route-returnUrl="@Context.Request.Path"
-                              method="post" class="form-horizontal">
-                            @Localizer["Language"]: <select name="culture" onchange="this.form.submit();"
-                                                            asp-for="@requestCulture.RequestCulture.UICulture.Name"
-                                                            asp-items="cultureItems"></select>
-                        </form>
-                    </div>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Home"]</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Clients" asp-action="Index">@Localizer["Clients"]</a>
+                            </li>
+                        </ul>
+                    }                                       
                 </div>
+                <form asp-controller="Home" asp-action="SetLanguage" asp-route-returnUrl="@Context.Request.Path" method="post" class="form-inline">
+                <label class="sr-only" for="langSelector">@Localizer["Language"]:</label>
+                    <select id="langSelector" class="form-select inline auto-width" name="culture" onchange="this.form.submit();"
+                                                    asp-for="@requestCulture.RequestCulture.UICulture.Name"
+                                                    asp-items="cultureItems"></select>
+                </form>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <form method="post" asp-controller="Account" asp-action="Logout">
+                        <input class="btn btn-outline-dark left-margin-10" type="submit" value="@Localizer["LogOut"]" />
+                    </form>
+                }
             </div>
         </nav>
     </header>
@@ -68,6 +74,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("Scripts", required: false)  
 </body>
 </html>

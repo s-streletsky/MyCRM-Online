@@ -5,7 +5,7 @@
 @{
     ViewData["Title"] = @Localizer["Title"];
 }
-@model MyCRM_Online.Models.Client
+@model MyCRM_Online.ViewModels.ClientEditViewModel
 
 <div class="text-center">
     <h1 class="display-4">@Localizer["Title"]</h1>
@@ -31,7 +31,7 @@
                 <input class="form-control" type="text" asp-for="Email" />
             </div>
             <div class="form-group">
-                <label asp-for="Country">@SharedLocalizer["Country"]</label>
+                <label asp-for="CountryId">@SharedLocalizer["Country"]</label>
                 <select class="form-control" asp-for="CountryId">
                     <option value="@null">@SharedLocalizer["Select"]</option>
                     @foreach (var country in ViewBag.Countries)
@@ -49,7 +49,7 @@
                 <input class="form-control" type="text" asp-for="Address" />
             </div>
             <div class="form-group">
-                <label asp-for="ShippingMethod">@SharedLocalizer["ShippingMethod"]</label>
+                <label asp-for="ShippingMethodId">@SharedLocalizer["ShippingMethod"]</label>
                 <select class="form-control" asp-for="ShippingMethodId">
                     <option value="@null">@SharedLocalizer["Select"]</option>
                     @foreach (var shippingMethod in ViewBag.ShippingMethods)

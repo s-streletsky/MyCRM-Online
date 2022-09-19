@@ -6,7 +6,7 @@ namespace MyCRM_Online.Models
     public class Client
     {
         public int? Id { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime? Date { get; set; }
 
         [Required]
         public string Name { get; set; }
