@@ -153,6 +153,9 @@
   <data name="Name" xml:space="preserve">
     <value>Name</value>
   </data>
+  <data name="Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
   <data name="Nickname" xml:space="preserve">
     <value>Nickname</value>
   </data>
@@ -167,6 +170,9 @@
   </data>
   <data name="PostalCode" xml:space="preserve">
     <value>Postal Code</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Previous</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>

@@ -10,10 +10,10 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using MyCRM_Online;
 using Microsoft.AspNetCore.Identity;
-using MyCRM_Online.Models;
 using System.Configuration;
 using System.Data.SQLite;
 using Microsoft.Data.Sqlite;
+using MyCRM_Online.Models.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,7 +28,7 @@ builder.Services
         options.UseSqlite(connectionBuilder.ToString());
     });
 
-builder.Services.AddIdentity<User, IdentityRole>()
+builder.Services.AddIdentity<UserEntity, IdentityRole>()
                 .AddEntityFrameworkStores<UsersContext>();
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");

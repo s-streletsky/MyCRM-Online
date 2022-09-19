@@ -1,4 +1,4 @@
-﻿using MyCRM_Online.Models;
+﻿using MyCRM_Online.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MyCRM_Online.ViewModels
 {
-    public class ClientsViewModel
+    public class ClientViewModel
     {
         private DateTime date;
 
@@ -21,9 +21,9 @@ namespace MyCRM_Online.ViewModels
         public string? Nickname { get; set; }
         public string? Phone { get; set; }
         public string? Email { get; set; }
-        public Country? Country { get; set; }
+        public CountryEntity? Country { get; set; }
         public string? City { get; set; }
-        public ShippingMethod? ShippingMethod { get; set; }
+        public ShippingMethodEntity? ShippingMethod { get; set; }
         public string? PostalCode { get; set; }              
     }
 }

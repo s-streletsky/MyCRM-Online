@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using MyCRM_Online.Models;
+using MyCRM_Online.Models.Entities;
 using MyCRM_Online.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -13,9 +13,9 @@ namespace MyCRM_Online
     {
         public AppMappingProfile()
         {
-            CreateMap<ClientCreateViewModel, Client>();
-            CreateMap<Client, ClientsViewModel>();
-            CreateMap<Client, ClientEditViewModel>().ReverseMap();
+            CreateMap<ClientCreateViewModel, ClientEntity>();
+            CreateMap<ClientEntity, ClientViewModel>();
+            CreateMap<ClientEntity, ClientEditViewModel>().ReverseMap();
         }
     }
 }

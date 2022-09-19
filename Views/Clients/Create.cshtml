@@ -1,11 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using MyCRM_Online.Models.Entities
 @inject IViewLocalizer Localizer
 @inject IHtmlLocalizer<SharedResource> SharedLocalizer
 
 @{
     ViewData["Title"] = @Localizer["Title"];
 }
-@model MyCRM_Online.Models.Client
+@model ClientEntity
 
 <div class="text-center">
     <h1 class="display-4">@Localizer["Title"]</h1>

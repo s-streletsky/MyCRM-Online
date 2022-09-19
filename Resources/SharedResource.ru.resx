@@ -153,6 +153,9 @@
   <data name="Name" xml:space="preserve">
     <value>Имя</value>
   </data>
+  <data name="Next" xml:space="preserve">
+    <value>Вперёд</value>
+  </data>
   <data name="Nickname" xml:space="preserve">
     <value>Ник</value>
   </data>
@@ -167,6 +170,9 @@
   </data>
   <data name="PostalCode" xml:space="preserve">
     <value>Отделение</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Назад</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Сохранить</value>

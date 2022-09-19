@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyCRM_Online.Db;
-using MyCRM_Online.Models;
+using MyCRM_Online.Models.Entities;
 using MyCRM_Online.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -18,10 +18,10 @@ namespace MyCRM_Online.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<User> userManager;
-        private readonly SignInManager<User> signInManager;
+        private readonly UserManager<UserEntity> userManager;
+        private readonly SignInManager<UserEntity> signInManager;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(UserManager<UserEntity> userManager, SignInManager<UserEntity> signInManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -38,7 +38,7 @@ namespace MyCRM_Online.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = new User { Email = model.Email, UserName = model.Email };
+                UserEntity user = new UserEntity { Email = model.Email, UserName = model.Email };
 
                 var result = await userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
@@ -125,7 +125,7 @@ namespace MyCRM_Online.Controllers
                 return RedirectToAction("Index", "Home");
             else
             {
-                User user = new User
+                UserEntity user = new UserEntity
                 {
                     Email = info.Principal.FindFirst(ClaimTypes.Email).Value,
                     UserName = info.Principal.FindFirst(ClaimTypes.Email).Value

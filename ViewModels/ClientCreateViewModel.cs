@@ -9,7 +9,6 @@ namespace MyCRM_Online.ViewModels
 {
     public class ClientCreateViewModel
     {
-        public DateTime Date { get; set; }
         public string Name { get; set; }
         public string? Nickname { get; set; }
         public string? Phone { get; set; }

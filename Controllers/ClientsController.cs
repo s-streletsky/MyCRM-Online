@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using MyCRM_Online.Db;
 using MyCRM_Online.Models;
+using MyCRM_Online.Models.Entities;
 using MyCRM_Online.ViewModels;
 using System.Diagnostics;
 using System.Drawing.Printing;
@@ -24,14 +26,18 @@ namespace MyCRM_Online.Controllers
             this.mapper = mapper;
         }
 
-        public IActionResult Index() 
+        public async Task<IActionResult> Index(int page = 1)
         {
-            var source = dataContext.Clients.ToList();
-            var clients = mapper.Map<List<ClientsViewModel>>(source);
+            int pageSize = 5;
 
-            ViewBag.Clients = clients;
+            IQueryable<ClientEntity> source = dataContext.Clients;
+            var totalCount = await source.CountAsync();
+            var entities = await source.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            var clients = mapper.Map<List<ClientViewModel>>(entities);
 
-            return View();
+            var pageInfo = new PageInfo<ClientViewModel>(totalCount, page, pageSize, clients);
+
+            return View(pageInfo);
         }
 
         public IActionResult Create()
@@ -45,8 +51,8 @@ namespace MyCRM_Online.Controllers
         [HttpPost]
         public IActionResult Create([FromForm]ClientCreateViewModel client)
         {
-            client.Date = DateTime.UtcNow;
-            var newClient = mapper.Map<Client>(client);
+            var newClient = mapper.Map<ClientEntity>(client);
+            newClient.Date = DateTime.UtcNow;
             dataContext.Clients.Add(newClient);
             dataContext.SaveChanges();
 
@@ -78,7 +84,7 @@ namespace MyCRM_Online.Controllers
         {
             if (ModelState.IsValid)
             {
-                var entity = dataContext.Clients.Single<Client>(c => c.Id == client.Id);
+                var entity = dataContext.Clients.Single<ClientEntity>(c => c.Id == client.Id);
                 mapper.Map(client, entity);
                 dataContext.SaveChanges();
 
@@ -92,7 +98,7 @@ namespace MyCRM_Online.Controllers
         [HttpPost]
         public IActionResult Delete([FromForm]int? id)
         {
-            dataContext.Clients.Remove(new Client() { Id = id });
+            dataContext.Clients.Remove(new ClientEntity() { Id = id });
             dataContext.SaveChanges();
 
             return RedirectToAction("Index");

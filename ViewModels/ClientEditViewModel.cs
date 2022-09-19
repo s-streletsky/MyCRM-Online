@@ -7,19 +7,8 @@ using System.Threading.Tasks;
 
 namespace MyCRM_Online.ViewModels
 {
-    public class ClientEditViewModel
+    public class ClientEditViewModel : ClientCreateViewModel
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string? Nickname { get; set; }
-        public string? Phone { get; set; }
-        public string? Email { get; set; }
-        public string? City { get; set; }
-        public string? Address { get; set; }
-        public string? PostalCode { get; set; }
-        public string? Notes { get; set; }
-
-        public int? ShippingMethodId { get; set; }
-        public int? CountryId { get; set; }
     }
 }

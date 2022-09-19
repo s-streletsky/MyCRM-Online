@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyCRM_Online.Models
+namespace MyCRM_Online.Models.Entities
 {
-    public class User : IdentityUser
+    public class UserEntity : IdentityUser
     {
     }
 }
