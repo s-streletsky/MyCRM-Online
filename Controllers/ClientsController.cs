@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using MyCRM_Online.Db;
@@ -9,22 +10,23 @@ using System.Drawing.Printing;
 
 namespace MyCRM_Online.Controllers
 {
+    [Authorize]
     public class ClientsController : Controller
     {
         private readonly ILogger<ClientsController> logger;
-        private readonly DataContext databaseContext;
+        private readonly DataContext dataContext;
         private readonly IMapper mapper;
 
-        public ClientsController(ILogger<ClientsController> logger, DataContext databaseContext, IMapper mapper)
+        public ClientsController(ILogger<ClientsController> logger, DataContext dataContext, IMapper mapper)
         {
             this.logger = logger;
-            this.databaseContext = databaseContext;
+            this.dataContext = dataContext;
             this.mapper = mapper;
         }
 
         public IActionResult Index() 
         {
-            var source = databaseContext.Clients.ToList();
+            var source = dataContext.Clients.ToList();
             var clients = mapper.Map<List<ClientsViewModel>>(source);
 
             ViewBag.Clients = clients;
@@ -45,8 +47,8 @@ namespace MyCRM_Online.Controllers
         {
             client.Date = DateTime.UtcNow;
             var newClient = mapper.Map<Client>(client);
-            databaseContext.Clients.Add(newClient);
-            databaseContext.SaveChanges();
+            dataContext.Clients.Add(newClient);
+            dataContext.SaveChanges();
 
             return RedirectToAction("Index");
         }
@@ -60,7 +62,7 @@ namespace MyCRM_Online.Controllers
             {
                 return NotFound();
             }
-            var source = databaseContext.Clients.Find(id);
+            var source = dataContext.Clients.Find(id);
             var client = mapper.Map<ClientEditViewModel>(source);
 
             if (client == null)
@@ -76,9 +78,9 @@ namespace MyCRM_Online.Controllers
         {
             if (ModelState.IsValid)
             {
-                var entity = databaseContext.Clients.Single<Client>(c => c.Id == client.Id);
+                var entity = dataContext.Clients.Single<Client>(c => c.Id == client.Id);
                 mapper.Map(client, entity);
-                databaseContext.SaveChanges();
+                dataContext.SaveChanges();
 
                 return RedirectToAction("Index");
             }
@@ -90,21 +92,21 @@ namespace MyCRM_Online.Controllers
         [HttpPost]
         public IActionResult Delete([FromForm]int? id)
         {
-            databaseContext.Clients.Remove(new Client() { Id = id });
-            databaseContext.SaveChanges();
+            dataContext.Clients.Remove(new Client() { Id = id });
+            dataContext.SaveChanges();
 
             return RedirectToAction("Index");
         }
 
         private void GetCountriesList()
         {
-            var countries = databaseContext.Countries.ToList();            
+            var countries = dataContext.Countries.ToList();            
             ViewBag.Countries = countries;            
         }
 
         private void GetShippingMethodsList()
         {
-            var shippingMethods = databaseContext.ShippingMethods.ToList();
+            var shippingMethods = dataContext.ShippingMethods.ToList();
             ViewBag.ShippingMethods = shippingMethods;
         }
     }

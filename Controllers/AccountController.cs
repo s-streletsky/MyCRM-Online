@@ -105,7 +105,6 @@ namespace MyCRM_Online.Controllers
             return View();
         }
 
-        [AllowAnonymous]
         public IActionResult GoogleLogin()
         {
             string redirectUrl = Url.Action("GoogleResponse", "Account");
@@ -113,7 +112,6 @@ namespace MyCRM_Online.Controllers
             return new ChallengeResult("Google", properties);
         }
 
-        [AllowAnonymous]
         public async Task<IActionResult> GoogleResponse()
         {
             ExternalLoginInfo info = await signInManager.GetExternalLoginInfoAsync();
