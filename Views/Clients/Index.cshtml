@@ -9,9 +9,10 @@
 
 @model MyCRM_Online.Models.PageInfo<ClientViewModel>
 
+@*Clients/index*@
 <div class="text-center">
     <h2 class="display-4">@Localizer["Title"]</h2>
-    <div class="button-panel">
+    <div class="text-align-left">
         <a class="btn btn-primary" asp-action="Create">@SharedLocalizer["Create"]</a>
     </div>
     
@@ -55,12 +56,12 @@
                     }</td>
 
                     <td>@client.PostalCode</td>
-                    <td>
+                    <td style="text-align: right;">
                         @using (Html.BeginForm(FormMethod.Post))
                         {
-                            <a class="btn btn-secondary btn-sm" asp-route-id="@client.Id" asp-action="Edit">@SharedLocalizer["Edit"]</a>
+                            <a class="btn btn-outline-secondary btn-sm" asp-route-id="@client.Id" asp-action="Edit">@SharedLocalizer["Edit"]</a>
 
-                            <button type="button" id="modalButton" class="btn btn-danger btn-sm" data-client-id="@client.Id" data-client-name="@client.Name" data-bs-toggle="modal" data-bs-target="#deletionModal">
+                            <button type="button" id="modalButton" class="btn btn-outline-danger btn-sm" data-client-id="@client.Id" data-client-name="@client.Name" data-bs-toggle="modal" data-bs-target="#deletionModal">
                                 @SharedLocalizer["Delete"]
                             </button>                            
                         }                        

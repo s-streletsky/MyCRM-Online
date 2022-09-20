@@ -129,4 +129,7 @@
   <data name="LogOut" xml:space="preserve">
     <value>Выйти</value>
   </data>
+  <data name="Stock" xml:space="preserve">
+    <value>Склад</value>
+  </data>
 </root>

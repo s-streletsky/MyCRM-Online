@@ -123,6 +123,9 @@
   <data name="Address" xml:space="preserve">
     <value>Address</value>
   </data>
+  <data name="BackToManufacturers" xml:space="preserve">
+    <value>Back to Manufacturers</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
@@ -149,6 +152,9 @@
   </data>
   <data name="Edit" xml:space="preserve">
     <value>Edit</value>
+  </data>
+  <data name="Manufacturer" xml:space="preserve">
+    <value>Manufacturer</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>Name</value>

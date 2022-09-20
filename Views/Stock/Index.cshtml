@@ -1,0 +1,15 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer
+
+@{
+    ViewData["Title"] = @Localizer["Title"];
+}
+
+@*Stock/Index*@
+<div class="text-center">
+    <h2 class="display-4">@Localizer["Title"]</h2>
+    <div class="text-align-left">
+        <a class="btn btn-outline-primary" asp-controller="Manufacturers" asp-action="Index">@Localizer["Manufacturers"]</a>
+    </div>   
+</div>

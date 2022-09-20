@@ -12,6 +12,7 @@ namespace MyCRM_Online.Db
         public DbSet<ClientEntity> Clients { get; set; }
         public DbSet<CountryEntity> Countries { get; set; }
         public DbSet<ShippingMethodEntity> ShippingMethods { get; set; }
+        public DbSet<ManufacturerEntity> Manufacturers { get; set; }
 
         static DataContext()
         {

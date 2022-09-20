@@ -6,14 +6,16 @@ using System.Diagnostics;
 
 namespace MyCRM_Online.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
-        [Authorize]
+        
         public IActionResult Index()
         {
             return View();
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public IActionResult SetLanguage(string culture, string returnUrl)
         {
