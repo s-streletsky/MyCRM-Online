@@ -21,6 +21,9 @@ namespace MyCRM_Online
             CreateMap<StockItemEntity, StockItemViewModel>();
             CreateMap<StockItemCreateViewModel, StockItemEntity>();
             CreateMap<StockItemEntity, StockItemEditViewModel>().ReverseMap();
+            CreateMap<StockArrivalEntity, StockArrivalViewModel>();
+            CreateMap<StockArrivalCreateViewModel, StockArrivalEntity>();
+            CreateMap<StockArrivalEntity, StockArrivalEditViewModel>().ReverseMap();
         }
     }
 }

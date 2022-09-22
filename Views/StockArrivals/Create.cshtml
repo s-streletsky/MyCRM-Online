@@ -1,0 +1,43 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using MyCRM_Online.ViewModels
+@inject IViewLocalizer Localizer
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer
+
+@{
+    ViewData["Title"] = @Localizer["Title"];
+}
+
+@model StockArrivalCreateViewModel
+
+<div class="text-center">
+    <h1 class="display-4">@Localizer["Title"]</h1>
+
+    <form class="text-align-left" asp-antiforgery="true" asp-action="Create" asp-controller="StockArrivals">
+        <div>
+            <div class="validation" asp-validation-summary="ModelOnly"></div>
+            <div class="form-group">
+                <label asp-for="StockItemId">@SharedLocalizer["StockItemName"]</label>
+                <select class="form-control" asp-for="StockItemId">
+                    <option value="null">@SharedLocalizer["Select"]</option>
+                    @foreach (var stockItem in ViewBag.StockItems)
+                    {
+                        <option value="@stockItem.Id">@stockItem.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Quantity">* @SharedLocalizer["Quantity"]</label>
+                <input class="form-control" type="text" asp-for="Quantity" />               
+            </div>
+            <div class="form-group">
+                <input class="btn btn-primary" type="submit" value="@SharedLocalizer["Create"]" />
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

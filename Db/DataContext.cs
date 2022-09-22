@@ -15,6 +15,7 @@ namespace MyCRM_Online.Db
         public DbSet<ManufacturerEntity> Manufacturers { get; set; }
         public DbSet<CurrencyEntity> Currencies { get; set; }
         public DbSet<StockItemEntity> StockItems { get; set; }
+        public DbSet<StockArrivalEntity> StockArrivals { get; set; }
 
         static DataContext()
         {
@@ -33,6 +34,7 @@ namespace MyCRM_Online.Db
             modelBuilder.Entity<ClientEntity>().Navigation(e => e.ShippingMethod).AutoInclude();
             modelBuilder.Entity<StockItemEntity>().Navigation(e => e.Manufacturer).AutoInclude();
             modelBuilder.Entity<StockItemEntity>().Navigation(e => e.Currency).AutoInclude();
+            modelBuilder.Entity<StockArrivalEntity>().Navigation(e => e.StockItem).AutoInclude();
         }
 
         public static void InitializeDatabase()
