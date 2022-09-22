@@ -13,6 +13,8 @@ namespace MyCRM_Online.Db
         public DbSet<CountryEntity> Countries { get; set; }
         public DbSet<ShippingMethodEntity> ShippingMethods { get; set; }
         public DbSet<ManufacturerEntity> Manufacturers { get; set; }
+        public DbSet<CurrencyEntity> Currencies { get; set; }
+        public DbSet<StockItemEntity> StockItems { get; set; }
 
         static DataContext()
         {
@@ -29,6 +31,8 @@ namespace MyCRM_Online.Db
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<ClientEntity>().Navigation(e => e.Country).AutoInclude();
             modelBuilder.Entity<ClientEntity>().Navigation(e => e.ShippingMethod).AutoInclude();
+            modelBuilder.Entity<StockItemEntity>().Navigation(e => e.Manufacturer).AutoInclude();
+            modelBuilder.Entity<StockItemEntity>().Navigation(e => e.Currency).AutoInclude();
         }
 
         public static void InitializeDatabase()
