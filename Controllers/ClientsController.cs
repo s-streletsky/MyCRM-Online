@@ -7,6 +7,7 @@ using MyCRM_Online.Db;
 using MyCRM_Online.Models;
 using MyCRM_Online.Models.Entities;
 using MyCRM_Online.ViewModels;
+using SmartBreadcrumbs.Attributes;
 using System.Diagnostics;
 using System.Drawing.Printing;
 

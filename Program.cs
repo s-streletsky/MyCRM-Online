@@ -14,11 +14,22 @@ using System.Configuration;
 using System.Data.SQLite;
 using Microsoft.Data.Sqlite;
 using MyCRM_Online.Models.Entities;
+using SmartBreadcrumbs.Extensions;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAutoMapper(typeof(AppMappingProfile));
 builder.Services.TryAddScoped<DataContext>();
+
+builder.Services.AddBreadcrumbs(Assembly.GetExecutingAssembly(), options =>
+{
+    options.TagName = "nav";
+    options.TagClasses = "";
+    options.OlClasses = "breadcrumb";
+    options.LiClasses = "breadcrumb-item";
+    options.ActiveLiClasses = "breadcrumb-item active";
+});
 
 builder.Services
     .AddDbContext<UsersContext>(options => {
