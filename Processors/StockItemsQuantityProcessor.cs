@@ -21,8 +21,10 @@ namespace MyCRM_Online.Processors
         {
             foreach (var stockItem in stockItems)
             {
-                var inOrders = dataContext.OrdersItems.Sum(i => i.Quantity);
-                var inArrivals = dataContext.StockArrivals.Sum(i => i.Quantity);
+                var inOrders = dataContext.OrdersItems.Where(i => i.StockItemId == stockItem.Id)
+                    .Sum(i => i.Quantity);
+                var inArrivals = dataContext.StockArrivals.Where(i => i.StockItemId == stockItem.Id)
+                    .Sum(i => i.Quantity);
                 stockItem.Quantity = inArrivals - inOrders;
             }
         }
