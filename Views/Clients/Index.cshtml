@@ -4,7 +4,7 @@
 @inject IHtmlLocalizer<SharedResource> SharedLocalizer
 
 @{
-    ViewData["Title"] = @Localizer["Title"];
+    ViewData["Title"] = @Localizer["Title"].Value;
 }
 
 @model MyCRM_Online.Models.PageInfo<ClientViewModel>

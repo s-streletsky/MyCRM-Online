@@ -27,6 +27,7 @@ namespace MyCRM_Online.Controllers
             this.mapper = mapper;
         }
 
+        [Breadcrumb("ViewData.Title")]
         public async Task<IActionResult> Index(int page = 1)
         {
             int pageSize = 5;
@@ -41,6 +42,7 @@ namespace MyCRM_Online.Controllers
             return View(pageInfo);
         }
 
+        [Breadcrumb("ViewData.Title")]
         public IActionResult Create()
         {
             GetCountries();

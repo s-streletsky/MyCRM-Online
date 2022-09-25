@@ -34,6 +34,12 @@ namespace MyCRM_Online.Controllers
             var totalCount = await source.CountAsync();
             var entities = await source.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
             var stockItems = mapper.Map<List<StockItemViewModel>>(entities);
+            //var stockItems = new StockItemProcessor(items).GetItems()
+            //new class StockItemProcess {
+            //    public StockitemProcessor(DataContext ctx) {
+            //          
+            //    }
+            //}
 
             var pageInfo = new PageInfo<StockItemViewModel>(totalCount, page, pageSize, stockItems);
 
