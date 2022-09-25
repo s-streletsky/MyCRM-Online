@@ -16,6 +16,7 @@ namespace MyCRM_Online.Db
         public DbSet<CurrencyEntity> Currencies { get; set; }
         public DbSet<StockItemEntity> StockItems { get; set; }
         public DbSet<StockArrivalEntity> StockArrivals { get; set; }
+        public DbSet<OrderItemEntity> OrdersItems { get; set; }
 
         static DataContext()
         {

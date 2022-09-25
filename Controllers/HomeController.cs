@@ -2,12 +2,10 @@
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using MyCRM_Online.Models;
-using SmartBreadcrumbs.Attributes;
 using System.Diagnostics;
 
 namespace MyCRM_Online.Controllers
 {
-    [DefaultBreadcrumb]
     [Authorize]
     public class HomeController : Controller
     {

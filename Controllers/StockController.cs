@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using MyCRM_Online.Processors;
 
 namespace MyCRM_Online.Controllers
 {
@@ -33,9 +34,12 @@ namespace MyCRM_Online.Controllers
             IQueryable<StockItemEntity> source = dataContext.StockItems;
             var totalCount = await source.CountAsync();
             var entities = await source.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
-            var stockItems = mapper.Map<List<StockItemViewModel>>(entities);
+            var mappedEntities = mapper.Map<List<StockItemViewModel>>(entities);
 
-            var pageInfo = new PageInfo<StockItemViewModel>(totalCount, page, pageSize, stockItems);
+            var quantityProcessor = new StockItemsQuantityProcessor(dataContext);
+            quantityProcessor.GetQuantity(mappedEntities);
+
+            var pageInfo = new PageInfo<StockItemViewModel>(totalCount, page, pageSize, mappedEntities);
 
             return View(pageInfo);
         }
