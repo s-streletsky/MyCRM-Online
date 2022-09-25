@@ -15,6 +15,6 @@ namespace MyCRM_Online.ViewModels
         public CurrencyEntity Currency { get; set; }
         public double PurchasePrice { get; set; }
         public double RetailPrice { get; set; }
-        public double Quantity { get; set; }
+        public double? Quantity { get; set; }
     }
 }
