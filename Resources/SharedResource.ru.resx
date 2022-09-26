@@ -162,6 +162,15 @@
   <data name="Edit" xml:space="preserve">
     <value>Изменить</value>
   </data>
+  <data name="ExchangeRate" xml:space="preserve">
+    <value>Курс</value>
+  </data>
+  <data name="ExchangeRateFor" xml:space="preserve">
+    <value>Курс для</value>
+  </data>
+  <data name="ExchangeRates" xml:space="preserve">
+    <value>Курс валют</value>
+  </data>
   <data name="Invoice" xml:space="preserve">
     <value>Приходная накладная</value>
   </data>

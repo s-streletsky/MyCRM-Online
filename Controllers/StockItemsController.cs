@@ -16,12 +16,12 @@ using MyCRM_Online.Processors;
 namespace MyCRM_Online.Controllers
 {
     [Authorize]
-    public class StockController : Controller
+    public class StockItemsController : Controller
     {
         private readonly DataContext dataContext;
         private readonly IMapper mapper;
 
-        public StockController(DataContext dataContext, IMapper mapper)
+        public StockItemsController(DataContext dataContext, IMapper mapper)
         {
             this.dataContext = dataContext;
             this.mapper = mapper;

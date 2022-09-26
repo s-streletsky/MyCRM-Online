@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MyCRM_Online.ViewModels
 {
-    public class StockArrivalViewModel
+    public class ExchangeRateViewModel
     {
         private DateTime date;
 
@@ -16,7 +16,7 @@ namespace MyCRM_Online.ViewModels
             get { return date; }
             set { date = value.ToLocalTime(); }
         }
-        public StockItemEntity StockItem { get; set; }
-        public float Quantity { get; set; }
+        public CurrencyEntity Currency { get; set; }
+        public double Value { get; set; }
     }
 }
