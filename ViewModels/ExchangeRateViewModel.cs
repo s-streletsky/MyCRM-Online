@@ -7,14 +7,16 @@ using System.Threading.Tasks;
 
 namespace MyCRM_Online.ViewModels
 {
-    public class StockItemViewModel
+    public class ExchangeRateViewModel
     {
+        private DateTime date;
+
         public int Id { get; set; }
-        public string Name { get; set; }
-        public ManufacturerEntity Manufacturer { get; set; }
+        public DateTime Date {
+            get { return date; }
+            set { date = value.ToLocalTime(); }
+        }
         public CurrencyEntity Currency { get; set; }
-        public double PurchasePrice { get; set; }
-        public double RetailPrice { get; set; }
-        public double Quantity { get; set; }
+        public double Value { get; set; }
     }
 }

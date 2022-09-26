@@ -24,6 +24,9 @@ namespace MyCRM_Online
             CreateMap<StockArrivalEntity, StockArrivalViewModel>();
             CreateMap<StockArrivalCreateViewModel, StockArrivalEntity>();
             CreateMap<StockArrivalEntity, StockArrivalEditViewModel>().ReverseMap();
+            CreateMap<ExchangeRateEntity, ExchangeRateViewModel>();
+            CreateMap<ExchangeRateCreateViewModel, ExchangeRateEntity>();
+            CreateMap<ExchangeRateEntity, ExchangeRateEditViewModel>().ReverseMap();
         }
     }
 }
