@@ -129,6 +129,9 @@
   <data name="LogOut" xml:space="preserve">
     <value>Log Out</value>
   </data>
+  <data name="Orders" xml:space="preserve">
+    <value>Orders</value>
+  </data>
   <data name="Stock" xml:space="preserve">
     <value>Stock</value>
   </data>

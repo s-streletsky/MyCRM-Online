@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using MyCRM_Online.Models.Entities
 @using MyCRM_Online.ViewModels
 @inject IViewLocalizer Localizer
 @inject IHtmlLocalizer<SharedResource> SharedLocalizer
@@ -7,32 +8,32 @@
     ViewData["Title"] = @Localizer["Title"];
 }
 
-@model StockArrivalCreateViewModel
+@model OrderCreateViewModel
 
 <div class="text-center">
     <h1 class="display-4">@Localizer["Title"]</h1>
 
     <div class="text-align-left">
-        <a class="btn btn-outline-secondary" asp-controller="StockArrivals" asp-action="Index">@SharedLocalizer["BackToStockArrivals"]</a>
+        <a class="btn btn-outline-secondary" asp-controller="Orders" asp-action="Index">@SharedLocalizer["BackToOrders"]</a>
     </div>
     <br>
 
-    <form class="text-align-left" asp-antiforgery="true" asp-action="Create" asp-controller="StockArrivals">
+    <form class="text-align-left" asp-antiforgery="true" asp-action="Create" asp-controller="Orders">
         <div>
             <div class="validation" asp-validation-summary="ModelOnly"></div>
             <div class="form-group">
-                <label asp-for="StockItemId">@SharedLocalizer["StockItemName"]</label>
-                <select class="form-select" asp-for="StockItemId">
+                <label asp-for="ClientId">@SharedLocalizer["Client"]</label>
+                <select class="form-select" asp-for="ClientId">
                     <option value="null">@SharedLocalizer["Select"]</option>
-                    @foreach (var stockItem in ViewBag.StockItems)
+                    @foreach (var client in ViewBag.Clients)
                     {
-                        <option value="@stockItem.Id">@stockItem.Name</option>
+                        <option value="@client.Id">@client.Name</option>
                     }
                 </select>
             </div>
             <div class="form-group">
-                <label asp-for="Quantity">* @SharedLocalizer["Quantity"]</label>
-                <input class="form-control" type="text" asp-for="Quantity" />               
+                <label asp-for="Notes">@SharedLocalizer["Notes"]</label>
+                <input class="form-control" type="text" asp-for="Notes" />
             </div>
             <div class="form-group text-align-right">
                 <input class="btn btn-primary" type="submit" value="@SharedLocalizer["Create"]" />

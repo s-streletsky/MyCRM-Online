@@ -18,6 +18,8 @@ namespace MyCRM_Online.Db
         public DbSet<StockArrivalEntity> StockArrivals { get; set; }
         public DbSet<OrderItemEntity> OrdersItems { get; set; }
         public DbSet<ExchangeRateEntity> ExchangeRates { get; set; }
+        public DbSet<OrderEntity> Orders { get; set; }
+        public DbSet<OrderStatusEntity> OrderStatuses { get; set; }
 
         static DataContext()
         {
@@ -38,6 +40,10 @@ namespace MyCRM_Online.Db
             modelBuilder.Entity<StockItemEntity>().Navigation(e => e.Currency).AutoInclude();
             modelBuilder.Entity<StockArrivalEntity>().Navigation(e => e.StockItem).AutoInclude();
             modelBuilder.Entity<ExchangeRateEntity>().Navigation(e => e.Currency).AutoInclude();
+            modelBuilder.Entity<OrderEntity>().Navigation(e => e.Client).AutoInclude();
+            modelBuilder.Entity<OrderEntity>().Navigation(e => e.Status).AutoInclude();
+            modelBuilder.Entity<OrderItemEntity>().Navigation(e => e.Order).AutoInclude();
+            modelBuilder.Entity<OrderItemEntity>().Navigation(e => e.StockItem).AutoInclude();
         }
 
         public static void InitializeDatabase()

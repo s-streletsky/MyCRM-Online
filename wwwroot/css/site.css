@@ -17,6 +17,10 @@ body {
   margin-bottom: 60px;
 }
 
+.table {
+    vertical-align: central;
+}
+
 .form-group {
     width: 50%;
     margin: 10px 0px 10px 0px;
@@ -34,14 +38,22 @@ th, td {
     width: auto;
 }
 
-.left-margin-10 {
-    margin: 0px 0px 0px 10px;
-}
-
 .width-50 {
     width: 60%;
 }
 
 .text-align-left {
     text-align: left;
+}
+
+.text-align-right {
+    text-align: right;
+}
+
+.margin-bottom-5 {
+    margin: 0px 0px 5px 0px;
+}
+
+.vertical-align-center {
+    vertical-align: central;
 }

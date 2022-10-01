@@ -7,8 +7,6 @@ namespace MyCRM_Online.Models.Entities
     {
         public int? Id { get; set; }
         public DateTime? Date { get; set; }
-
-        [Required]
         public string Name { get; set; }
         public string? Nickname { get; set; }
         public string? Phone { get; set; }

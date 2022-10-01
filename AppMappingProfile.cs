@@ -27,6 +27,12 @@ namespace MyCRM_Online
             CreateMap<ExchangeRateEntity, ExchangeRateViewModel>();
             CreateMap<ExchangeRateCreateViewModel, ExchangeRateEntity>();
             CreateMap<ExchangeRateEntity, ExchangeRateEditViewModel>().ReverseMap();
+            CreateMap<OrderEntity, OrderViewModel>();
+            CreateMap<OrderCreateViewModel, OrderEntity>();
+            CreateMap<OrderEntity, OrderEditViewModel>().ReverseMap();
+            CreateMap<OrderItemEntity, OrderItemViewModel>();
+            CreateMap<OrderItemCreateViewModel, OrderItemEntity>();
+            CreateMap<OrderItemEntity, OrderItemEditViewModel>().ReverseMap();
         }
     }
 }

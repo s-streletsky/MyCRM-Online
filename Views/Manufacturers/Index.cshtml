@@ -13,12 +13,14 @@
 <div class="text-center">
     <h2 class="display-4">@Localizer["Title"]</h2>
     <div class="text-align-left">
+        <a class="btn btn-outline-secondary" asp-controller="StockItems" asp-action="Index">@SharedLocalizer["BackToStock"]</a>
         <a class="btn btn-primary" asp-action="Create">@SharedLocalizer["Create"]</a>
     </div>
+    <div style="margin: 0px 0px 5px 0px"></div>
 
     <table class="table table-striped width-50">
         <thead class="thead-light">
-            <tr>
+            <tr class="table-primary">
                 <th scope="col">Id</th>
                 <th scope="col">@SharedLocalizer["Manufacturer"]</th>
                 <th scope="col"></th>

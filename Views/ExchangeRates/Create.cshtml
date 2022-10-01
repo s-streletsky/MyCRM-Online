@@ -12,12 +12,17 @@
 <div class="text-center">
     <h1 class="display-4">@Localizer["Title"]</h1>
 
+    <div class="text-align-left ">
+        <a class="btn btn-outline-secondary" asp-action="Index">@SharedLocalizer["BackToExchangeRates"]</a>
+    </div>
+    <br>
+
     <form class="text-align-left" asp-antiforgery="true" asp-action="Create" asp-controller="ExchangeRates">
         <div>
             <div class="validation" asp-validation-summary="ModelOnly"></div>
             <div class="form-group">
                 <label asp-for="CurrencyId">@SharedLocalizer["Currency"]</label>
-                <select class="form-control" asp-for="CurrencyId">
+                <select class="form-select" asp-for="CurrencyId">
                     <option value="null">@SharedLocalizer["Select"]</option>
                     @foreach (var currency in ViewBag.Currencies)
                     {
@@ -29,7 +34,7 @@
                 <label asp-for="Value">* @SharedLocalizer["ExchangeRate"]</label>
                 <input class="form-control" type="text" asp-for="Value" />
             </div>
-            <div class="form-group">
+            <div class="form-group text-align-right">
                 <input class="btn btn-primary" type="submit" value="@SharedLocalizer["Create"]" />
             </div>
         </div>

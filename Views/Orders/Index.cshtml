@@ -7,56 +7,51 @@
     ViewData["Title"] = @Localizer["Title"];
 }
 
-@model MyCRM_Online.Models.PageInfo<StockArrivalViewModel>
+@model MyCRM_Online.Models.PageInfo<OrderViewModel>
 
-@*StockArrivals/Index*@
 <div class="text-center">
     <h2 class="display-4">@Localizer["Title"]</h2>
     <div class="text-align-left margin-bottom-5">
-        <a class="btn btn-outline-secondary" asp-controller="StockItems" asp-action="Index">@SharedLocalizer["BackToStock"]</a>
-        <a class="btn btn-primary text-align-left" asp-controller="StockArrivals" asp-action="Create">@SharedLocalizer["Create"]</a>        
+        <a class="btn btn-primary text-align-left" asp-controller="Orders" asp-action="Create">@SharedLocalizer["Create"]</a>
+        <a class="btn btn-outline-primary" asp-controller="OrdersItems" asp-action="Index">@SharedLocalizer["InOrders"]</a>
     </div>
 
     <table class="table table-striped">
         <thead class="thead-light">
             <tr class="table-primary">
                 <th scope="col">Id</th>
-                <th scope="col">@SharedLocalizer["Date"]</th>
-                <th scope="col">@SharedLocalizer["StockItemName"]</th>
-                <th scope="col">@SharedLocalizer["Quantity"]</th>
+                <th scope="col">@SharedLocalizer["Added"]</th>
+                <th scope="col">@SharedLocalizer["Client"]</th>
+                <th scope="col">@SharedLocalizer["Status"]</th>
+                <th scope="col">@SharedLocalizer["Notes"]</th>
                 <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var stockArrival in Model.Items)
+            @foreach (var order in Model.Items)
             {
                 <tr>
-                    <td>@stockArrival.Id</td>
-                    <td>@stockArrival.Date</td>
+                    <td>@order.Id</td>
+                    <td>@order.Date</td>
                     <td>
-                        @if (stockArrival.StockItem != null)
+                        @if (order.Client != null)
                         {
-                            @stockArrival.StockItem.Name
+                            @order.Client.Name
                         }
                     </td>
-                    <td>@stockArrival.Quantity</td>
-                    <td style="text-align: right;">
-                        @using (Html.BeginForm(FormMethod.Post))
+                    <td>
+                        @if (order.Status != null)
                         {
-                            <a class="btn btn-outline-secondary btn-sm"
-                                asp-route-id="@stockArrival.Id"
-                                asp-action="Edit">
-                                @SharedLocalizer["Edit"]
-                            </a>
-
-                            <button type="button" id="modalButton" class="btn btn-outline-danger btn-sm"
-                                data-stockarrival-id="@stockArrival.Id"
-                                data-stockarrival-date="@stockArrival.Date"
-                                data-stockarrival-item="@stockArrival.StockItem?.Name"
-                                data-bs-toggle="modal" data-bs-target="#deletionModal">
-                                @SharedLocalizer["Delete"]
-                            </button>
+                            @order.Status.Name
                         }
+                    </td>
+                    <td>@order.Notes</td>
+                    <td style="text-align: right;">
+                        <a class="btn btn-outline-secondary btn-sm" asp-route-id="@order.Id" asp-action="Edit">@SharedLocalizer["Edit"]</a>
+
+                        <button type="button" id="modalButton" class="btn btn-outline-danger btn-sm" data-order-id="@order.Id" data-bs-toggle="modal" data-bs-target="#deletionModal">
+                            @SharedLocalizer["Delete"]
+                        </button>
                     </td>
                 </tr>
             }
@@ -94,7 +89,7 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@SharedLocalizer["Cancel"]</button>
                     @using (Html.BeginForm(FormMethod.Post))
                     {
-                        <input class="stockarrival-id" type="hidden" name="id" />
+                        <input class="order-id" type="hidden" name="id" />
                         <input class="btn btn-danger" type="submit" value="@SharedLocalizer["Delete"]" asp-action="Delete" />
                     }
                 </div>
@@ -105,8 +100,8 @@
 
 @section Scripts{
     <script type="text/javascript">
-        let stockArrival = {
-            localized: '@SharedLocalizer["Invoice"]'
+        let order = {
+            localized: '@SharedLocalizer["Order"]'
         }
         let deletePermanently = {
             localized: '@SharedLocalizer["DeletePermanently"]'
@@ -114,12 +109,10 @@
 
         $('#deletionModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget)
-            var stockArrivalId = button.data('stockarrival-id')
-            var stockArrivalDate = button.data('stockarrival-date')
-            var stockItemName = button.data('stockarrival-item')
+            var orderId = button.data('order-id')
             var modal = $(this)
-            modal.find('.modal-body-message').text(stockArrival.localized + ': ' + stockItemName + ' (' + stockArrivalDate + '). ' + deletePermanently.localized + '?')
-            modal.find('.stockarrival-id').val(stockArrivalId)
+            modal.find('.modal-body-message').text(order.localized + ': ' + orderId + '. ' + deletePermanently.localized + '?')
+            modal.find('.order-id').val(orderId)
         })
     </script>
 }

@@ -123,8 +123,26 @@
   <data name="Address" xml:space="preserve">
     <value>Адрес</value>
   </data>
+  <data name="BackToClients" xml:space="preserve">
+    <value>Назад к списку Клиентов</value>
+  </data>
+  <data name="BackToExchangeRates" xml:space="preserve">
+    <value>Назад к Курсам валют</value>
+  </data>
   <data name="BackToManufacturers" xml:space="preserve">
     <value>Назад к списку Производителей</value>
+  </data>
+  <data name="BackToOrder" xml:space="preserve">
+    <value>Назад к странице Заказа</value>
+  </data>
+  <data name="BackToOrders" xml:space="preserve">
+    <value>Назад к списку Заказов</value>
+  </data>
+  <data name="BackToStock" xml:space="preserve">
+    <value>Назад к Складу</value>
+  </data>
+  <data name="BackToStockArrivals" xml:space="preserve">
+    <value>Назад к списку Прихода товара</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Отмена</value>
@@ -144,6 +162,9 @@
   <data name="Create" xml:space="preserve">
     <value>Добавить</value>
   </data>
+  <data name="CreateOrder" xml:space="preserve">
+    <value>Новый заказ</value>
+  </data>
   <data name="Currency" xml:space="preserve">
     <value>Валюта</value>
   </data>
@@ -159,6 +180,9 @@
   <data name="Description" xml:space="preserve">
     <value>Описание</value>
   </data>
+  <data name="Discount" xml:space="preserve">
+    <value>Скидка %</value>
+  </data>
   <data name="Edit" xml:space="preserve">
     <value>Изменить</value>
   </data>
@@ -171,8 +195,17 @@
   <data name="ExchangeRates" xml:space="preserve">
     <value>Курс валют</value>
   </data>
+  <data name="Expenses" xml:space="preserve">
+    <value>Расходы</value>
+  </data>
+  <data name="InOrders" xml:space="preserve">
+    <value>Товары в заказах</value>
+  </data>
   <data name="Invoice" xml:space="preserve">
     <value>Приходная накладная</value>
+  </data>
+  <data name="Item" xml:space="preserve">
+    <value>Позиция</value>
   </data>
   <data name="Manufacturer" xml:space="preserve">
     <value>Производитель</value>
@@ -189,6 +222,9 @@
   <data name="Notes" xml:space="preserve">
     <value>Примечания</value>
   </data>
+  <data name="Order" xml:space="preserve">
+    <value>Заказ</value>
+  </data>
   <data name="Password" xml:space="preserve">
     <value>Пароль</value>
   </data>
@@ -201,14 +237,20 @@
   <data name="Previous" xml:space="preserve">
     <value>Назад</value>
   </data>
+  <data name="Price" xml:space="preserve">
+    <value>Цена</value>
+  </data>
+  <data name="Profit" xml:space="preserve">
+    <value>Прибыль</value>
+  </data>
   <data name="PurchasePrice" xml:space="preserve">
-    <value>Закупка</value>
+    <value>Цена (закупка)</value>
   </data>
   <data name="Quantity" xml:space="preserve">
     <value>Количество</value>
   </data>
   <data name="RetailPrice" xml:space="preserve">
-    <value>Розница</value>
+    <value>Цена (розница)</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Сохранить</value>
@@ -219,10 +261,16 @@
   <data name="ShippingMethod" xml:space="preserve">
     <value>Доставка</value>
   </data>
+  <data name="Status" xml:space="preserve">
+    <value>Статус</value>
+  </data>
   <data name="StockArrivals" xml:space="preserve">
     <value>Приход товара</value>
   </data>
   <data name="StockItemName" xml:space="preserve">
     <value>Наименование</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Итого</value>
   </data>
 </root>

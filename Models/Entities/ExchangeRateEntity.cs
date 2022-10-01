@@ -12,6 +12,6 @@ namespace MyCRM_Online.Models.Entities
         public DateTime Date { get; set; }
         public int CurrencyId { get; set; }
         public CurrencyEntity Currency { get; set; }
-        public double Value { get; set; }
+        public float Value { get; set; }
     }
 }

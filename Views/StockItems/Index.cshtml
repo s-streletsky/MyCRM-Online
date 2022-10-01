@@ -12,8 +12,9 @@
 @*Stock/Index*@
 <div class="text-center">
     <h2 class="display-4">@Localizer["Title"]</h2>
-    <div class="text-align-left">
-        <a class="btn btn-primary text-align-left" asp-controller="Stock" asp-action="Create">@SharedLocalizer["Create"]</a>
+
+    <div class="text-align-left margin-bottom-5">
+        <a class="btn btn-primary" asp-controller="StockItems" asp-action="Create">@SharedLocalizer["Create"]</a>
         <a class="btn btn-outline-primary" asp-controller="StockArrivals" asp-action="Index">@SharedLocalizer["StockArrivals"]</a>
         <a class="btn btn-outline-primary" asp-controller="Manufacturers" asp-action="Index">@Localizer["Manufacturers"]</a>
         <a class="btn btn-outline-primary" asp-controller="ExchangeRates" asp-action="Index">@SharedLocalizer["ExchangeRates"]</a>
@@ -21,7 +22,7 @@
 
     <table class="table table-striped">
         <thead class="thead-light">
-            <tr>
+            <tr class="table-primary">
                 <th scope="col">Id</th>
                 <th scope="col">@SharedLocalizer["StockItemName"]</th>
                 <th scope="col">@SharedLocalizer["Manufacturer"]</th>

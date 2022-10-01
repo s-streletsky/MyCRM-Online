@@ -12,12 +12,17 @@
 <div class="text-center">
     <h1 class="display-4">@Localizer["Title"]</h1>
 
+    <div class="text-align-left">
+        <a class="btn btn-outline-secondary" asp-controller="StockArrivals" asp-action="Index">@SharedLocalizer["BackToStockArrivals"]</a>
+    </div>
+    <br>
+
     <form class="text-align-left" asp-antiforgery="true" asp-action="Edit" asp-controller="StockArrivals">
         <div>
             <div class="validation" asp-validation-summary="ModelOnly"></div>
             <div class="form-group">
                 <label asp-for="StockItemId">@SharedLocalizer["StockItemName"]</label>
-                <select class="form-control" asp-for="StockItemId">
+                <select class="form-select" asp-for="StockItemId">
                     <option value="null">@SharedLocalizer["Select"]</option>
                     @foreach (var stockItem in ViewBag.StockItems)
                     {
@@ -29,7 +34,7 @@
                 <label asp-for="Quantity">* @SharedLocalizer["Quantity"]</label>
                 <input class="form-control" type="text" asp-for="Quantity" />
             </div>
-            <div class="form-group">
+            <div class="form-group text-align-right">
                 <input class="btn btn-primary" type="submit" value="@SharedLocalizer["Save"]" />
             </div>
         </div>

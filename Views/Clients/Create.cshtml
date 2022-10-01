@@ -12,6 +12,11 @@
 <div class="text-center">
     <h1 class="display-4">@Localizer["Title"]</h1>
 
+    <div class="text-align-left">
+        <a class="btn btn-outline-secondary" asp-controller="Clients" asp-action="Index">@SharedLocalizer["BackToClients"]</a>
+    </div>
+    <br>
+
     <form class="text-align-left" asp-antiforgery="true" asp-action="Create" asp-controller="Clients">
         <div>
             <div class="validation" asp-validation-summary="ModelOnly"></div>
@@ -34,7 +39,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Country">@SharedLocalizer["Country"]</label>
-                <select class="form-control" asp-for="CountryId">
+                <select class="form-select" asp-for="CountryId">
                     <option>@SharedLocalizer["Select"]</option>
                     @foreach (var country in ViewBag.Countries)
                     {
@@ -52,7 +57,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="ShippingMethod">@SharedLocalizer["ShippingMethod"]</label>
-                <select class="form-control" asp-for="ShippingMethodId">
+                <select class="form-select" asp-for="ShippingMethodId">
                     <option>@SharedLocalizer["Select"]</option>
                     @foreach (var shippingMethod in ViewBag.ShippingMethods)
                     {
@@ -68,7 +73,7 @@
                 <label asp-for="Notes">@SharedLocalizer["Notes"]</label>
                 <input class="form-control" type="text" asp-for="Notes" />
             </div>
-            <div class="form-group">
+            <div class="form-group text-align-right">
                 <input class="btn btn-primary" type="submit" value="@SharedLocalizer["Create"]" />
             </div>
         </div>

@@ -21,7 +21,7 @@
     <title>@ViewData["Title"] - MyCRM-Online</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/MyCRM_Online.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/MyCRM_Online.styles.css" asp-append-version="true" />    
 </head>
 <body>
     <header>
@@ -43,6 +43,9 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Clients" asp-action="Index">@Localizer["Clients"]</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">@Localizer["Orders"]</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="StockItems" asp-action="Index">@Localizer["Stock"]</a>
                             </li>
                         </ul>
@@ -56,8 +59,8 @@
                 </form>
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <form method="post" asp-controller="Account" asp-action="Logout">
-                        <input class="btn btn-outline-dark left-margin-10" type="submit" value="@Localizer["LogOut"]" />
+                    <form method="post" asp-controller="Account" asp-action="Logout" style="margin: 0px 0px 0px 5px">
+                        <input class="btn btn-warning" type="submit" value="@Localizer["LogOut"]" />
                     </form>
                 }
             </div>
@@ -65,7 +68,6 @@
     </header>
     <div class="container">       
         <main role="main" class="pb-3">
-            <breadcrumb></breadcrumb>
             @RenderBody()
         </main>
     </div>

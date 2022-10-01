@@ -15,7 +15,7 @@ namespace MyCRM_Online.Models.Entities
         public string? Description { get; set; }
         public int? CurrencyId { get; set; }
         public CurrencyEntity? Currency { get; set; }
-        public double? PurchasePrice { get; set; }
-        public double? RetailPrice { get; set; }
+        public float PurchasePrice { get; set; }
+        public float RetailPrice { get; set; }
     }
 }
