@@ -234,6 +234,9 @@
   <data name="Order" xml:space="preserve">
     <value>Order</value>
   </data>
+  <data name="OrdersQuantity" xml:space="preserve">
+    <value>Orders Quantity</value>
+  </data>
   <data name="Password" xml:space="preserve">
     <value>Password</value>
   </data>
@@ -242,6 +245,9 @@
   </data>
   <data name="Payments" xml:space="preserve">
     <value>Payments</value>
+  </data>
+  <data name="PaymentsTotal" xml:space="preserve">
+    <value>Payments Total</value>
   </data>
   <data name="Phone" xml:space="preserve">
     <value>Phone</value>
@@ -284,6 +290,9 @@
   </data>
   <data name="StockItemName" xml:space="preserve">
     <value>Name</value>
+  </data>
+  <data name="TitleClientProfile" xml:space="preserve">
+    <value>Client Profile</value>
   </data>
   <data name="TitleEditPayment" xml:space="preserve">
     <value>Edit Payment</value>

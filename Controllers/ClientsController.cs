@@ -104,6 +104,26 @@ namespace MyCRM_Online.Controllers
             return RedirectToAction("Index");
         }
 
+        public IActionResult Profile(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            var source = dataContext.Clients.Find(id);
+            var client = mapper.Map<ClientProfileViewModel>(source);
+
+            if (client == null)
+            {
+                return NotFound();
+            }
+
+            client.OrdersQuantity = dataContext.Orders.Where(o => o.ClientId == id).Count();
+            client.PaymentsTotal = dataContext.Payments.Where(p => p.ClientId == id).Sum(p => p.Amount);
+
+            return View(client);
+        }
+
         private void GetCountries()
         {
             var countries = dataContext.Countries.ToList();            

@@ -23,7 +23,6 @@
                 <th scope="col">Id</th>
                 <th scope="col">@SharedLocalizer["Added"]</th>
                 <th scope="col">@SharedLocalizer["Name"]</th>
-                <th scope="col">@SharedLocalizer["Nickname"]</th>
                 <th scope="col">@SharedLocalizer["Phone"]</th>
                 <th scope="col">Email</th>
                 <th scope="col">@SharedLocalizer["Country"]</th>
@@ -39,8 +38,9 @@
                 <tr>
                     <td>@client.Id</td>
                     <td>@client.Date</td>
-                    <td>@client.Name</td>
-                    <td>@client.Nickname</td>
+                    <td>
+                        <a asp-route-id="@client.Id" asp-action="Profile">@client.Name</a>
+                    </td>
                     <td>@client.Phone</td>
                     <td>@client.Email</td>
 

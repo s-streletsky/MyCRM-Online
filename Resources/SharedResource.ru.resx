@@ -234,6 +234,9 @@
   <data name="Order" xml:space="preserve">
     <value>Заказ</value>
   </data>
+  <data name="OrdersQuantity" xml:space="preserve">
+    <value>Кол-во заказов</value>
+  </data>
   <data name="Password" xml:space="preserve">
     <value>Пароль</value>
   </data>
@@ -242,6 +245,9 @@
   </data>
   <data name="Payments" xml:space="preserve">
     <value>Платежи</value>
+  </data>
+  <data name="PaymentsTotal" xml:space="preserve">
+    <value>Сумма платежей</value>
   </data>
   <data name="Phone" xml:space="preserve">
     <value>Телефон</value>
@@ -284,6 +290,9 @@
   </data>
   <data name="StockItemName" xml:space="preserve">
     <value>Наименование</value>
+  </data>
+  <data name="TitleClientProfile" xml:space="preserve">
+    <value>Профиль клиента</value>
   </data>
   <data name="TitleEditPayment" xml:space="preserve">
     <value>Изменить платёж</value>
