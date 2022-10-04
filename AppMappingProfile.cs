@@ -33,6 +33,8 @@ namespace MyCRM_Online
             CreateMap<OrderItemEntity, OrderItemViewModel>();
             CreateMap<OrderItemCreateViewModel, OrderItemEntity>();
             CreateMap<OrderItemEntity, OrderItemEditViewModel>().ReverseMap();
+            CreateMap<PaymentCreateViewModel, PaymentEntity>();
+            CreateMap<PaymentEntity, PaymentEditViewModel>().ReverseMap();
         }
     }
 }

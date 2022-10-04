@@ -123,6 +123,9 @@
   <data name="Address" xml:space="preserve">
     <value>Адрес</value>
   </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Сумма</value>
+  </data>
   <data name="BackToClients" xml:space="preserve">
     <value>Назад к списку Клиентов</value>
   </data>
@@ -137,6 +140,9 @@
   </data>
   <data name="BackToOrders" xml:space="preserve">
     <value>Назад к списку Заказов</value>
+  </data>
+  <data name="BackToPayments" xml:space="preserve">
+    <value>Назад к списку Платежей</value>
   </data>
   <data name="BackToStock" xml:space="preserve">
     <value>Назад к Складу</value>
@@ -213,6 +219,9 @@
   <data name="Name" xml:space="preserve">
     <value>Имя</value>
   </data>
+  <data name="NewPayment" xml:space="preserve">
+    <value>Новый платёж</value>
+  </data>
   <data name="Next" xml:space="preserve">
     <value>Вперёд</value>
   </data>
@@ -227,6 +236,12 @@
   </data>
   <data name="Password" xml:space="preserve">
     <value>Пароль</value>
+  </data>
+  <data name="Payment" xml:space="preserve">
+    <value>Платёж</value>
+  </data>
+  <data name="Payments" xml:space="preserve">
+    <value>Платежи</value>
   </data>
   <data name="Phone" xml:space="preserve">
     <value>Телефон</value>
@@ -269,6 +284,9 @@
   </data>
   <data name="StockItemName" xml:space="preserve">
     <value>Наименование</value>
+  </data>
+  <data name="TitleEditPayment" xml:space="preserve">
+    <value>Изменить платёж</value>
   </data>
   <data name="Total" xml:space="preserve">
     <value>Итого</value>

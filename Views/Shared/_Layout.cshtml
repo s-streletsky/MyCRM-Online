@@ -35,19 +35,19 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <ul class="navbar-nav flex-grow-1">
+                        <ul class="nav">
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Home"]</a>
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Home"]</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Clients" asp-action="Index">@Localizer["Clients"]</a>
+                                <a class="nav-link" asp-area="" asp-controller="Clients" asp-action="Index">@Localizer["Clients"]</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">@Localizer["Orders"]</a>
+                                <a class="nav-link" asp-area="" asp-controller="Orders" asp-action="Index">@Localizer["Orders"]</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="StockItems" asp-action="Index">@Localizer["Stock"]</a>
-                            </li>
+                                <a class="nav-link" asp-area="" asp-controller="StockItems" asp-action="Index">@Localizer["Stock"]</a>
+                            </li>                           
                         </ul>
                     }                                       
                 </div>

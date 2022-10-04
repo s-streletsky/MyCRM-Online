@@ -54,7 +54,10 @@
                         </select>
                     </td>
                     <td><input class="form-control" asp-for="Notes" /></td>
-                    <td style="text-align: right;"><input class="btn btn-success" type="submit" value="@SharedLocalizer["Save"]" /></td>
+                    <td style="text-align: right;">
+                        <a class="btn btn-outline-secondary" asp-route-id="@Model.Id" asp-controller="Payments" asp-action="CreateFast">@SharedLocalizer["NewPayment"]</a>
+                        <input class="btn btn-success" type="submit" value="@SharedLocalizer["Save"]" />
+                    </td>
                 </tr>
             </form>
             
@@ -62,8 +65,8 @@
     </table>
     <div class="text-align-left">
         <h4>К оплате: @ViewBag.OrderTotal</h4>
-        <h4>Оплачено:</h4>
-        <h4>Долг:</h4>
+        <h4>Оплачено: @ViewBag.PaymentsTotal</h4>
+        <h4>Долг: @ViewBag.Debt</h4>
     </div>    
     <br>
 

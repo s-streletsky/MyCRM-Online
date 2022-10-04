@@ -89,6 +89,8 @@ namespace MyCRM_Online.Controllers
             var order = mapper.Map<OrderEditViewModel>(source);
             ViewBag.OrderItems = dataContext.OrdersItems.Where(i => i.OrderId == id).ToList();
             ViewBag.OrderTotal = dataContext.OrdersItems.Where(i => i.OrderId == id).Sum(i => i.Total);
+            ViewBag.PaymentsTotal = dataContext.Payments.Where(p => p.OrderId == id).Sum(p => p.Amount);
+            ViewBag.Debt = ViewBag.OrderTotal - ViewBag.PaymentsTotal;
 
             if (order == null)
             {
