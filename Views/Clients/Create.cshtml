@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
-@using MyCRM_Online.Models.Entities
+@using MyCRM_Online.ViewModels.Clients
 @inject IViewLocalizer Localizer
 @inject IHtmlLocalizer<SharedResource> SharedLocalizer
 
@@ -7,7 +7,7 @@
     ViewData["Title"] = @Localizer["Title"];
 }
 
-@model ClientEntity
+@model ClientCreateViewModel
 
 <div class="text-center">
     <h1 class="display-4">@Localizer["Title"]</h1>
@@ -23,22 +23,25 @@
             <div class="form-group">
                 <label asp-for="Name">* @SharedLocalizer["Name"]</label>
                 <input class="form-control" type="text" asp-for="Name" placeholder="@Localizer["ExampleName"]" />
-                <span style="color:red" asp-validation-for="Name"></span>
+                <span class="color-red" asp-validation-for="Name"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Nickname">@SharedLocalizer["Nickname"]</label>
                 <input class="form-control" type="text" asp-for="Nickname" />
+                <span class="color-red" asp-validation-for="Nickname"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Phone">@SharedLocalizer["Phone"]</label>
                 <input class="form-control" type="text" asp-for="Phone" placeholder="@Localizer["ExamplePhone"]" />
+                <span class="color-red" asp-validation-for="Phone"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Email">Email</label>
                 <input class="form-control" type="text" asp-for="Email" />
+                <span class="color-red" asp-validation-for="Email"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Country">@SharedLocalizer["Country"]</label>
+                <label asp-for="CountryId">@SharedLocalizer["Country"]</label>
                 <select class="form-select" asp-for="CountryId">
                     <option>@SharedLocalizer["Select"]</option>
                     @foreach (var country in ViewBag.Countries)
@@ -50,13 +53,15 @@
             <div class="form-group">
                 <label asp-for="City">@SharedLocalizer["City"]</label>
                 <input class="form-control" type="text" asp-for="City" />
+                <span class="color-red" asp-validation-for="City"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Address">@SharedLocalizer["Address"]</label>
                 <input class="form-control" type="text" asp-for="Address" />
+                <span class="color-red" asp-validation-for="Address"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ShippingMethod">@SharedLocalizer["ShippingMethod"]</label>
+                <label asp-for="ShippingMethodId">@SharedLocalizer["ShippingMethod"]</label>
                 <select class="form-select" asp-for="ShippingMethodId">
                     <option>@SharedLocalizer["Select"]</option>
                     @foreach (var shippingMethod in ViewBag.ShippingMethods)
@@ -68,10 +73,12 @@
             <div class="form-group">
                 <label asp-for="PostalCode">@SharedLocalizer["PostalCode"]</label>
                 <input class="form-control" type="text" asp-for="PostalCode" />
+                <span class="color-red" asp-validation-for="PostalCode"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Notes">@SharedLocalizer["Notes"]</label>
                 <input class="form-control" type="text" asp-for="Notes" />
+                <span class="color-red" asp-validation-for="Notes"></span>
             </div>
             <div class="form-group text-align-right">
                 <input class="btn btn-primary" type="submit" value="@SharedLocalizer["Create"]" />

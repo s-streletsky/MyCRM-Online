@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using MyCRM_Online.ViewModels.Manufacturers
 @inject IViewLocalizer Localizer
 @inject IHtmlLocalizer<SharedResource> SharedLocalizer
 
@@ -6,7 +7,7 @@
     ViewData["Title"] = @Localizer["Title"];
 }
 
-@model MyCRM_Online.ViewModels.ManufacturerEditViewModel
+@model ManufacturerEditViewModel
 
 <div class="text-center">
     <h1 class="display-4">@Localizer["Title"]</h1>

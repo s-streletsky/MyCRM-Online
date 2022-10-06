@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using MyCRM_Online.Db;
 using MyCRM_Online.Models.Entities;
 using MyCRM_Online.Models;
-using MyCRM_Online.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using MyCRM_Online.ViewModels.Payments;
 
 namespace MyCRM_Online.Controllers
 {

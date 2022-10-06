@@ -18,6 +18,9 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddControllers(
+    options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
+
 builder.Services.AddAutoMapper(typeof(AppMappingProfile));
 builder.Services.TryAddScoped<DataContext>();
 

@@ -57,3 +57,7 @@ th, td {
 .vertical-align-center {
     vertical-align: central;
 }
+
+.color-red {
+    color: red;
+}

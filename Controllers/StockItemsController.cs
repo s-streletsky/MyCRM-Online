@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using MyCRM_Online.Db;
 using MyCRM_Online.Models.Entities;
 using MyCRM_Online.Models;
-using MyCRM_Online.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyCRM_Online.Processors;
+using MyCRM_Online.ViewModels.StockItems;
 
 namespace MyCRM_Online.Controllers
 {
@@ -55,11 +55,16 @@ namespace MyCRM_Online.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] StockItemCreateViewModel stockItem)
         {
-            var newStockItem = mapper.Map<StockItemEntity>(stockItem);
-            dataContext.StockItems.Add(newStockItem);
-            dataContext.SaveChanges();
+            if (ModelState.IsValid)
+            {
+                var newStockItem = mapper.Map<StockItemEntity>(stockItem);
+                dataContext.StockItems.Add(newStockItem);
+                dataContext.SaveChanges();
 
-            return RedirectToAction("Index");
+                return RedirectToAction("Index");
+            }
+
+            return View();
         }
 
         public IActionResult Edit(int? id)

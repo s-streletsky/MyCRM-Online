@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @using MyCRM_Online.Models.Entities
 @using MyCRM_Online.ViewModels
+@using MyCRM_Online.ViewModels.OrdersItems
 @inject IViewLocalizer Localizer
 @inject IHtmlLocalizer<SharedResource> SharedLocalizer
 
@@ -22,22 +23,25 @@
         <div>
             <div class="validation" asp-validation-summary="ModelOnly"></div>
             <div class="form-group">
-                <label asp-for="StockItemId">@SharedLocalizer["StockItemName"]</label>
-                <select class="form-select" asp-for="StockItemId">
-                    <option value="null">@SharedLocalizer["Select"]</option>
+                <label asp-for="StockItemId">* @SharedLocalizer["StockItemName"]</label>
+                <select class="form-select" size="10" asp-for="StockItemId">
+                    <option selected value="-1">@SharedLocalizer["Select"]</option>
                     @foreach (var item in ViewBag.StockItems)
                     {
                         <option value="@item.Id">@item.Name</option>
                     }
                 </select>
+                <span class="color-red" asp-validation-for="StockItemId"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Quantity">@SharedLocalizer["Quantity"]</label>
+                <label asp-for="Quantity">* @SharedLocalizer["Quantity"]</label>
                 <input class="form-control" type="text" asp-for="Quantity " />
+                <span class="color-red" asp-validation-for="Quantity"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Discount">@SharedLocalizer["Discount"]</label>
                 <input class="form-control" type="text" asp-for="Discount" />
+                <span class="color-red" asp-validation-for="Discount"></span>
             </div>
             <div class="form-group text-align-right">
                 <input hidden type="text" asp-for="OrderId" value="@Model.OrderId" />

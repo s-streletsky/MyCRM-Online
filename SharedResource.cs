@@ -6,7 +6,5 @@ using System.Threading.Tasks;
 
 namespace MyCRM_Online
 {
-    public class SharedResource
-    {
-    }
+    public class SharedResource { }
 }

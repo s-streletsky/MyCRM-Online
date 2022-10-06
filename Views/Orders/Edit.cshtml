@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @using MyCRM_Online.Models.Entities
 @using MyCRM_Online.ViewModels
+@using MyCRM_Online.ViewModels.Orders
 @inject IViewLocalizer Localizer
 @inject IHtmlLocalizer<SharedResource> SharedLocalizer
 
@@ -30,39 +31,44 @@
             </tr>
         </thead>
         <tbody>
-            <form method="post" asp-action="Edit" asp-controller="Orders">
-                <tr class="text-vertical-align">
-                    <td>
-                        <label asp-for="Id">@Model.Id</label>
-                        <input hidden asp-for="Id" />
-                    </td>
-                    <td>
-                        <label asp-for="Date">@Model.Date</label>
-                        <input hidden asp-for="Date" />
-                    </td>
-                    <td>
-                        <label asp-for="Client">@Model.Client.Name</label>
-                        <input hidden asp-for="ClientId" />
-                    </td>
-                    <td>
-                        <select class="form-select" asp-for="StatusId">
-                            <option value="null">@SharedLocalizer["Select"]</option>
+            <form asp-antiforgery="true" asp-action="Edit" asp-controller="Orders">
+                <div>
+                    <div class="validation" asp-validation-summary="ModelOnly"></div>
+                    <tr class="text-vertical-align">
+                        <td>
+                            <label asp-for="Id">@Model.Id</label>
+                            <input hidden asp-for="Id" />
+                        </td>
+                        <td>
+                            <label asp-for="Date">@Model.Date</label>
+                            <input hidden asp-for="Date" />
+                        </td>
+                        <td>
+                            <label asp-for="Client">@Model.Client.Name</label>
+                            <input hidden asp-for="ClientId" />
+                        </td>
+                        <td>
+                            <select class="form-select" asp-for="StatusId">
                                 @foreach (var status in ViewBag.Statuses)
                                 {
                                 <option value="@status.Id">@status.Name</option>
                                 }
-                        </select>
-                    </td>
-                    <td><input class="form-control" asp-for="Notes" /></td>
-                    <td style="text-align: right;">
-                        <a class="btn btn-outline-secondary" asp-route-id="@Model.Id" asp-controller="Payments" asp-action="CreateFast">@SharedLocalizer["NewPayment"]</a>
-                        <input class="btn btn-success" type="submit" value="@SharedLocalizer["Save"]" />
-                    </td>
-                </tr>
-            </form>
-            
+                            </select>
+                        </td>
+                        <td>
+                            <input class="form-control" asp-for="Notes" />
+                            <span class="color-red" asp-validation-for="Notes"></span>
+                        </td>
+                        <td style="text-align: right;">
+                            <a class="btn btn-outline-secondary" asp-route-id="@Model.Id" asp-controller="Payments" asp-action="CreateFast">@SharedLocalizer["NewPayment"]</a>
+                            <input class="btn btn-success" type="submit" value="@SharedLocalizer["Save"]" />
+                        </td>
+                    </tr>
+                </div>
+            </form>           
         </tbody>
     </table>
+
     <div class="text-align-left">
         <h4>К оплате: @ViewBag.OrderTotal</h4>
         <h4>Оплачено: @ViewBag.PaymentsTotal</h4>

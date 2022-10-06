@@ -121,7 +121,7 @@
     <value>Иванов Иван</value>
   </data>
   <data name="ExamplePhone" xml:space="preserve">
-    <value>048 777 55 33</value>
+    <value>+380487775533</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>Новый клиент</value>

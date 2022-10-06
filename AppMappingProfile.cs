@@ -1,6 +1,13 @@
 ﻿using AutoMapper;
 using MyCRM_Online.Models.Entities;
-using MyCRM_Online.ViewModels;
+using MyCRM_Online.ViewModels.Clients;
+using MyCRM_Online.ViewModels.ExchangeRates;
+using MyCRM_Online.ViewModels.Manufacturers;
+using MyCRM_Online.ViewModels.Orders;
+using MyCRM_Online.ViewModels.OrdersItems;
+using MyCRM_Online.ViewModels.Payments;
+using MyCRM_Online.ViewModels.StockArrivals;
+using MyCRM_Online.ViewModels.StockItems;
 using System;
 using System.Collections.Generic;
 using System.Linq;

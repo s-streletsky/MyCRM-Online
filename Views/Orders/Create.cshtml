@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @using MyCRM_Online.Models.Entities
-@using MyCRM_Online.ViewModels
+@using MyCRM_Online.ViewModels.Orders
 @inject IViewLocalizer Localizer
 @inject IHtmlLocalizer<SharedResource> SharedLocalizer
 
@@ -23,17 +23,19 @@
             <div class="validation" asp-validation-summary="ModelOnly"></div>
             <div class="form-group">
                 <label asp-for="ClientId">@SharedLocalizer["Client"]</label>
-                <select class="form-select" asp-for="ClientId">
-                    <option value="null">@SharedLocalizer["Select"]</option>
+                <select class="form-select" size="10" asp-for="ClientId">
+                    <option selected value="-1">@SharedLocalizer["Select"]</option>
                     @foreach (var client in ViewBag.Clients)
                     {
                         <option value="@client.Id">@client.Name</option>
                     }
                 </select>
+                <span class="color-red" asp-validation-for="ClientId"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Notes">@SharedLocalizer["Notes"]</label>
                 <input class="form-control" type="text" asp-for="Notes" />
+                <span class="color-red" asp-validation-for="Notes"></span>
             </div>
             <div class="form-group text-align-right">
                 <input class="btn btn-primary" type="submit" value="@SharedLocalizer["Create"]" />

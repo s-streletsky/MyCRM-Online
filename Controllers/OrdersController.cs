@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using MyCRM_Online.Db;
 using MyCRM_Online.Models.Entities;
 using MyCRM_Online.Models;
-using MyCRM_Online.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using MyCRM_Online.ViewModels.Orders;
 
 namespace MyCRM_Online.Controllers
 {
@@ -42,8 +42,8 @@ namespace MyCRM_Online.Controllers
 
         public IActionResult Create()
         {
-            GetClients();
-            GetOrderStatuses();
+            SetAllClientsListToViewBag();
+            SetOrderStatusesListToViewBag();
 
             return View();
         }
@@ -83,7 +83,7 @@ namespace MyCRM_Online.Controllers
                 id = (int)TempData["OrderId"];
             }
 
-            GetOrderStatuses();
+            SetOrderStatusesListToViewBag();
 
             var source = dataContext.Orders.Find(id);
             var order = mapper.Map<OrderEditViewModel>(source);
@@ -106,7 +106,8 @@ namespace MyCRM_Online.Controllers
             if (ModelState.IsValid)
             {
                 var entity = dataContext.Orders.Find(order.Id);
-                mapper.Map(order, entity);
+                entity.StatusId = order.StatusId;
+                entity.Notes = order.Notes;
                 dataContext.SaveChanges();
 
                 return RedirectToAction("Index");
@@ -124,13 +125,13 @@ namespace MyCRM_Online.Controllers
             return RedirectToAction("Index");
         }
 
-        private void GetClients()
+        private void SetAllClientsListToViewBag()
         {
             var clients = dataContext.Clients.ToList();
             ViewBag.Clients = clients;
         }
 
-        private void GetOrderStatuses()
+        private void SetOrderStatusesListToViewBag()
         {
             var statuses = dataContext.OrderStatuses.ToList();
             ViewBag.Statuses = statuses;

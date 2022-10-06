@@ -6,7 +6,7 @@ using Microsoft.Extensions.Localization;
 using MyCRM_Online.Db;
 using MyCRM_Online.Models;
 using MyCRM_Online.Models.Entities;
-using MyCRM_Online.ViewModels;
+using MyCRM_Online.ViewModels.Clients;
 using System.Diagnostics;
 using System.Drawing.Printing;
 
