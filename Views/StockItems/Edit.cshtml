@@ -23,12 +23,12 @@
             <div class="form-group">
                 <label asp-for="Name">* @SharedLocalizer["StockItemName"]</label>
                 <input class="form-control" type="text" asp-for="Name" />
-                <span style="color:red" asp-validation-for="Name"></span>
+                <span class="color-red" asp-validation-for="Name"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ManufacturerId">@SharedLocalizer["Manufacturer"]</label>
                 <select class="form-select" asp-for="ManufacturerId">
-                    <option value="null">@SharedLocalizer["Select"]</option>
+                    <option value="">@SharedLocalizer["Select"]</option>
                     @foreach (var manufacturer in ViewBag.Manufacturers)
                     {
                         <option value="@manufacturer.Id">@manufacturer.Name</option>
@@ -42,22 +42,22 @@
             <div class="form-group">
                 <label asp-for="CurrencyId">@SharedLocalizer["Currency"]</label>
                 <select class="form-select" asp-for="CurrencyId">
-                    <option value="null">@SharedLocalizer["Select"]</option>
                     @foreach (var currency in ViewBag.Currencies)
                     {
                         <option value="@currency.Id">@currency.Code</option>
                     }
                 </select>
+                <span class="color-red" asp-validation-for="CurrencyId"></span>
             </div>
             <div class="form-group">
                 <label asp-for="PurchasePrice">* @SharedLocalizer["PurchasePrice"]</label>
                 <input class="form-control" type="text" asp-for="PurchasePrice" />
-                <span style="color:red" asp-validation-for="PurchasePrice"></span>
+                <span class="color-red" asp-validation-for="PurchasePrice"></span>
             </div>
             <div class="form-group">
                 <label asp-for="RetailPrice">* @SharedLocalizer["RetailPrice"]</label>
                 <input class="form-control" type="text" asp-for="RetailPrice" />
-                <span style="color:red" asp-validation-for="RetailPrice"></span>
+                <span class="color-red" asp-validation-for="RetailPrice"></span>
             </div>
             <div class="form-group text-align-right">
                 <input class="btn btn-primary" type="submit" value="@SharedLocalizer["Save"]" />

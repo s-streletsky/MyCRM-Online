@@ -9,7 +9,8 @@ namespace MyCRM_Online.ViewModels.Manufacturers
 {
     public class ManufacturerCreateViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "Required")]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "NameStringLenght")]
         public string Name { get; set; }
     }
 }

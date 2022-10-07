@@ -22,8 +22,7 @@
             <div class="validation" asp-validation-summary="ModelOnly"></div>
             <div class="form-group">
                 <label asp-for="StockItemId">@SharedLocalizer["StockItemName"]</label>
-                <select class="form-select" asp-for="StockItemId">
-                    <option value="null">@SharedLocalizer["Select"]</option>
+                <select class="form-select" size="10" asp-for="StockItemId">
                     @foreach (var stockItem in ViewBag.StockItems)
                     {
                         <option value="@stockItem.Id">@stockItem.Name</option>
@@ -33,6 +32,7 @@
             <div class="form-group">
                 <label asp-for="Quantity">* @SharedLocalizer["Quantity"]</label>
                 <input class="form-control" type="text" asp-for="Quantity" />
+                <span class="color-red" asp-validation-for="Quantity"></span>
             </div>
             <div class="form-group text-align-right">
                 <input class="btn btn-primary" type="submit" value="@SharedLocalizer["Save"]" />

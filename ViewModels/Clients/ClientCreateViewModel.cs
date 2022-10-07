@@ -40,9 +40,9 @@ namespace MyCRM_Online.ViewModels.Clients
 
         public int? ShippingMethodId { get; set; }
 
+
         [RegularExpression(@"^[A-Za-z0-9-]{3,20}$", ErrorMessage = "PostalCodeAllowedCharacters")]
         public string? PostalCode { get; set; }
-
 
 
         [MaxLength(255, ErrorMessage = "MaxLenght255")]
