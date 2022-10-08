@@ -10,9 +10,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyCRM_Online.ViewModels.Payments;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyCRM_Online.Controllers
 {
+    [Authorize]
     public class PaymentsController : Controller
     {
         private readonly DataContext dataContext;

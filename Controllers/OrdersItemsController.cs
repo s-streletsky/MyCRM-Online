@@ -11,9 +11,11 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyCRM_Online.Processors;
 using MyCRM_Online.ViewModels.OrdersItems;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyCRM_Online.Controllers
 {
+    [Authorize]
     public class OrdersItemsController : Controller
     {
         private readonly DataContext dataContext;

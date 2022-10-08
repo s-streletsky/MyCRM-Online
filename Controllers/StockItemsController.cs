@@ -46,8 +46,8 @@ namespace MyCRM_Online.Controllers
 
         public IActionResult Create()
         {
-            GetManufacturers();
-            GetCurrencies();
+            SetAllManufacturersListToViewBag();
+            SetAllCurrenciesListToViewBag();
 
             return View();
         }
@@ -69,8 +69,8 @@ namespace MyCRM_Online.Controllers
 
         public IActionResult Edit(int? id)
         {
-            GetManufacturers();
-            GetCurrencies();
+            SetAllManufacturersListToViewBag();
+            SetAllCurrenciesListToViewBag();
 
             if (id == null || id == 0)
             {
@@ -111,13 +111,13 @@ namespace MyCRM_Online.Controllers
             return RedirectToAction("Index");
         }
 
-        private void GetManufacturers()
+        private void SetAllManufacturersListToViewBag()
         {
             var manufacturers = dataContext.Manufacturers.ToList();
             ViewBag.Manufacturers = manufacturers;
         }
 
-        private void GetCurrencies()
+        private void SetAllCurrenciesListToViewBag()
         {
             var currencies = dataContext.Currencies.ToList();
             ViewBag.Currencies = currencies;

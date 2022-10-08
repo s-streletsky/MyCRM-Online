@@ -39,15 +39,41 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Home"]</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Clients" asp-action="Index">@Localizer["Clients"]</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @Localizer["Clients"]
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" asp-controller="Clients" asp-action="Index">@Localizer["ClientsList"]</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Clients" asp-action="Create">@Localizer["AddClient"]</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" asp-controller="Payments" asp-action="Index">@Localizer["Payments"]</a></li>
+                                </ul>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Orders" asp-action="Index">@Localizer["Orders"]</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @Localizer["Orders"]
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" asp-controller="Orders" asp-action="Index">@Localizer["OrdersList"]</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Orders" asp-action="Create">@Localizer["CreateOrder"]</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" asp-controller="OrdersItems" asp-action="Index">@Localizer["ItemsInOrders"]</a></li>
+                                </ul>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="StockItems" asp-action="Index">@Localizer["Stock"]</a>
-                            </li>                           
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @Localizer["Stock"]
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" asp-controller="StockItems" asp-action="Index">@Localizer["StockItems"]</a></li>
+                                    <li><a class="dropdown-item" asp-controller="StockItems" asp-action="Create">@Localizer["AddStockItem"]</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" asp-controller="StockArrivals" asp-action="Index">@Localizer["StockArrivals"]</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Manufacturers" asp-action="Index">@Localizer["Manufacturers"]</a></li>
+                                    <li><a class="dropdown-item" asp-controller="ExchangeRates" asp-action="Index">@Localizer["ExchangeRates"]</a></li>
+                                </ul>
+                            </li>
                         </ul>
                     }                                       
                 </div>

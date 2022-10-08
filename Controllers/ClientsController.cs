@@ -42,8 +42,8 @@ namespace MyCRM_Online.Controllers
 
         public IActionResult Create()
         {
-            GetCountries();
-            GetShippingMethods();
+            SetAllCountriesListToViewBag();
+            SetAllShippingMethodsListToViewBag();
 
             return View(); 
         }
@@ -61,8 +61,8 @@ namespace MyCRM_Online.Controllers
 
         public IActionResult Edit(int? id)
         {
-            GetCountries();
-            GetShippingMethods();
+            SetAllCountriesListToViewBag();
+            SetAllShippingMethodsListToViewBag();
 
             if (id == null || id == 0)
             {
@@ -124,13 +124,13 @@ namespace MyCRM_Online.Controllers
             return View(client);
         }
 
-        private void GetCountries()
+        private void SetAllCountriesListToViewBag()
         {
             var countries = dataContext.Countries.ToList();            
             ViewBag.Countries = countries;            
         }
 
-        private void GetShippingMethods()
+        private void SetAllShippingMethodsListToViewBag()
         {
             var shippingMethods = dataContext.ShippingMethods.ToList();
             ViewBag.ShippingMethods = shippingMethods;

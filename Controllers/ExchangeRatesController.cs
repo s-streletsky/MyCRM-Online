@@ -10,9 +10,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyCRM_Online.ViewModels.ExchangeRates;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyCRM_Online.Controllers
 {
+    [Authorize]
     public class ExchangeRatesController : Controller
     {
         private readonly DataContext dataContext;
@@ -40,7 +42,7 @@ namespace MyCRM_Online.Controllers
 
         public IActionResult Create()
         {
-            GetCurrencies();
+            SetAllCurrenciesListToViewBag();
 
             return View();
         }
@@ -58,7 +60,7 @@ namespace MyCRM_Online.Controllers
 
         public IActionResult Edit(int? id)
         {
-            GetCurrencies();
+            SetAllCurrenciesListToViewBag();
 
             if (id == null || id == 0)
             {
@@ -99,7 +101,7 @@ namespace MyCRM_Online.Controllers
             return RedirectToAction("Index");
         }
 
-        private void GetCurrencies()
+        private void SetAllCurrenciesListToViewBag()
         {
             var currencies = dataContext.Currencies.ToList();
             ViewBag.Currencies = currencies;

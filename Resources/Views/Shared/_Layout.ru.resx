@@ -117,11 +117,29 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddClient" xml:space="preserve">
+    <value>Добавить клиента</value>
+  </data>
+  <data name="AddStockItem" xml:space="preserve">
+    <value>Добавить товар</value>
+  </data>
   <data name="Clients" xml:space="preserve">
     <value>Клиенты</value>
   </data>
+  <data name="ClientsList" xml:space="preserve">
+    <value>Все клиенты</value>
+  </data>
+  <data name="CreateOrder" xml:space="preserve">
+    <value>Создать заказ</value>
+  </data>
+  <data name="ExchangeRates" xml:space="preserve">
+    <value>Курс валют</value>
+  </data>
   <data name="Home" xml:space="preserve">
     <value>Домашняя</value>
+  </data>
+  <data name="ItemsInOrders" xml:space="preserve">
+    <value>Товары в заказах</value>
   </data>
   <data name="Language" xml:space="preserve">
     <value>Язык</value>
@@ -129,10 +147,25 @@
   <data name="LogOut" xml:space="preserve">
     <value>Выйти</value>
   </data>
+  <data name="Manufacturers" xml:space="preserve">
+    <value>Производители</value>
+  </data>
   <data name="Orders" xml:space="preserve">
     <value>Заказы</value>
   </data>
+  <data name="OrdersList" xml:space="preserve">
+    <value>Все заказы</value>
+  </data>
+  <data name="Payments" xml:space="preserve">
+    <value>Платежи</value>
+  </data>
   <data name="Stock" xml:space="preserve">
     <value>Склад</value>
+  </data>
+  <data name="StockArrivals" xml:space="preserve">
+    <value>Приход товара</value>
+  </data>
+  <data name="StockItems" xml:space="preserve">
+    <value>Все товары</value>
   </data>
 </root>

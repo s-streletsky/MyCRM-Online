@@ -10,9 +10,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyCRM_Online.ViewModels.StockArrivals;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyCRM_Online.Controllers
 {
+    [Authorize]
     public class StockArrivalsController : Controller
     {
         private readonly DataContext dataContext;
@@ -40,7 +42,7 @@ namespace MyCRM_Online.Controllers
 
         public IActionResult Create()
         {
-            GetStockItems();
+            SetAllStockItemsListToViewBag();
 
             return View();
         }
@@ -58,7 +60,7 @@ namespace MyCRM_Online.Controllers
 
         public IActionResult Edit(int? id)
         {
-            GetStockItems();
+            SetAllStockItemsListToViewBag();
 
             if (id == null || id == 0)
             {
@@ -99,7 +101,7 @@ namespace MyCRM_Online.Controllers
             return RedirectToAction("Index");
         }
 
-        private void GetStockItems()
+        private void SetAllStockItemsListToViewBag()
         {
             var stockItems = dataContext.StockItems.ToList();
             ViewBag.StockItems = stockItems;
