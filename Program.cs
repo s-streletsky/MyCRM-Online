@@ -23,6 +23,7 @@ builder.Services.AddControllers(
 
 builder.Services.AddAutoMapper(typeof(AppMappingProfile));
 builder.Services.TryAddScoped<DataContext>();
+builder.Services.TryAddSingleton<IDateTimeProvider, DateTimeProvider>();
 
 builder.Services
     .AddDbContext<UsersContext>(options => {

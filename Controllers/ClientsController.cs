@@ -18,12 +18,14 @@ namespace MyCRM_Online.Controllers
         private readonly ILogger<ClientsController> logger;
         private readonly DataContext dataContext;
         private readonly IMapper mapper;
+        private readonly IDateTimeProvider dateTimeProvider;
 
-        public ClientsController(ILogger<ClientsController> logger, DataContext dataContext, IMapper mapper)
+        public ClientsController(ILogger<ClientsController> logger, DataContext dataContext, IMapper mapper, IDateTimeProvider dateTimeProvider)
         {
             this.logger = logger;
             this.dataContext = dataContext;
             this.mapper = mapper;
+            this.dateTimeProvider = dateTimeProvider;
         }
 
         public async Task<IActionResult> Index(int page = 1)
@@ -52,7 +54,7 @@ namespace MyCRM_Online.Controllers
         public IActionResult Create([FromForm]ClientCreateViewModel client)
         {
             var newClient = mapper.Map<ClientEntity>(client);
-            newClient.Date = DateTime.UtcNow;
+            newClient.Date = dateTimeProvider.UtcNow;
             dataContext.Clients.Add(newClient);
             dataContext.SaveChanges();
 

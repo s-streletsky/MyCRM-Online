@@ -19,11 +19,13 @@ namespace MyCRM_Online.Controllers
     {
         private readonly DataContext dataContext;
         private readonly IMapper mapper;
+        private readonly IDateTimeProvider dateTimeProvider;
 
-        public OrdersController(DataContext dataContext, IMapper mapper)
+        public OrdersController(DataContext dataContext, IMapper mapper, IDateTimeProvider dateTimeProvider)
         {
             this.dataContext = dataContext;
             this.mapper = mapper;
+            this.dateTimeProvider = dateTimeProvider;
         }
 
         public async Task<IActionResult> Index(int page = 1)
@@ -52,7 +54,7 @@ namespace MyCRM_Online.Controllers
         public IActionResult Create([FromForm] OrderCreateViewModel order)
         {
             var newOrder = mapper.Map<OrderEntity>(order);
-            newOrder.Date = DateTime.UtcNow;
+            newOrder.Date = dateTimeProvider.UtcNow;
             newOrder.StatusId = 4;
             dataContext.Orders.Add(newOrder);
             dataContext.SaveChanges();

@@ -19,11 +19,13 @@ namespace MyCRM_Online.Controllers
     {
         private readonly DataContext dataContext;
         private readonly IMapper mapper;
+        private readonly IDateTimeProvider dateTimeProvider;
 
-        public PaymentsController(DataContext dataContext, IMapper mapper)
+        public PaymentsController(DataContext dataContext, IMapper mapper, IDateTimeProvider dateTimeProvider)
         {
             this.dataContext = dataContext;
             this.mapper = mapper;
+            this.dateTimeProvider = dateTimeProvider;
         }
 
         public async Task<IActionResult> Index(int page = 1)
@@ -54,7 +56,7 @@ namespace MyCRM_Online.Controllers
         public IActionResult CreateFast([FromForm] PaymentCreateViewModel payment)
         {
             var newPayment = mapper.Map<PaymentEntity>(payment);
-            newPayment.Date = DateTime.UtcNow;
+            newPayment.Date = dateTimeProvider.UtcNow;
             dataContext.Payments.Add(newPayment);
             dataContext.SaveChanges();
 

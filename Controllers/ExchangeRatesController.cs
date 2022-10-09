@@ -19,11 +19,13 @@ namespace MyCRM_Online.Controllers
     {
         private readonly DataContext dataContext;
         private readonly IMapper mapper;
+        private readonly IDateTimeProvider dateTimeProvider;
 
-        public ExchangeRatesController(DataContext dataContext, IMapper mapper)
+        public ExchangeRatesController(DataContext dataContext, IMapper mapper, IDateTimeProvider dateTimeProvider)
         {
             this.dataContext = dataContext;
             this.mapper = mapper;
+            this.dateTimeProvider = dateTimeProvider;
         }
 
         public async Task<IActionResult> Index(int page = 1)
@@ -51,7 +53,7 @@ namespace MyCRM_Online.Controllers
         public IActionResult Create([FromForm] ExchangeRateCreateViewModel exchangeRate)
         {
             var newExchangeRate = mapper.Map<ExchangeRateEntity>(exchangeRate);
-            newExchangeRate.Date = DateTime.UtcNow;
+            newExchangeRate.Date = dateTimeProvider.UtcNow;
             dataContext.ExchangeRates.Add(newExchangeRate);
             dataContext.SaveChanges();
 

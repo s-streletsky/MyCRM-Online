@@ -20,11 +20,13 @@ namespace MyCRM_Online.Controllers
     {
         private readonly DataContext dataContext;
         private readonly IMapper mapper;
+        private readonly IDateTimeProvider dateTimeProvider;
 
-        public OrdersItemsController(DataContext dataContext, IMapper mapper)
+        public OrdersItemsController(DataContext dataContext, IMapper mapper, IDateTimeProvider dateTimeProvider)
         {
             this.dataContext = dataContext;
             this.mapper = mapper;
+            this.dateTimeProvider = dateTimeProvider;
         }
 
         public async Task<IActionResult> Index(int page = 1)
@@ -135,7 +137,7 @@ namespace MyCRM_Online.Controllers
                     var defaultExchangeRate = new ExchangeRateEntity()
                     {
                         Id = -1,
-                        Date = DateTime.UtcNow,
+                        Date = dateTimeProvider.UtcNow,
                         CurrencyId = currency.Id,
                         Value = 1
                     };
