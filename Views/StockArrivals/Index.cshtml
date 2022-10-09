@@ -9,7 +9,6 @@
 
 @model MyCRM_Online.Models.PageInfo<StockArrivalViewModel>
 
-@*StockArrivals/Index*@
 <div class="text-center">
     <h2 class="display-4">@Localizer["Title"]</h2>
     <div class="text-align-left margin-bottom-5">
@@ -44,7 +43,7 @@
                         @using (Html.BeginForm(FormMethod.Post))
                         {
                             <a class="btn btn-outline-secondary btn-sm"
-                                asp-route-id="@stockArrival.Id"
+                                asp-route-stockArrivalId="@stockArrival.Id"
                                 asp-action="Edit">
                                 @SharedLocalizer["Edit"]
                             </a>

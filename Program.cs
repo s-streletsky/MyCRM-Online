@@ -49,6 +49,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
                     googleOptions.SignInScheme = IdentityConstants.ExternalScheme;
                 });
 
+builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 // Add services to the container.
 builder.Services.AddControllersWithViews()
     .AddDataAnnotationsLocalization()

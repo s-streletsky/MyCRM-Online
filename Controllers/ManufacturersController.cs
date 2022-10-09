@@ -55,13 +55,13 @@ namespace MyCRM_Online.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult Edit(int? id)
+        public IActionResult Edit([FromQuery] int? manufacturerId)
         {
-            if (id == null || id == 0)
+            if (manufacturerId == null || manufacturerId == 0)
             {
                 return NotFound();
             }
-            var source = dataContext.Manufacturers.Find(id);
+            var source = dataContext.Manufacturers.Find(manufacturerId);
             var manufacturer = mapper.Map<ManufacturerEditViewModel>(source);
 
             if (manufacturer == null)

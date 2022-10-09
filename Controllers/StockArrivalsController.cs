@@ -58,15 +58,15 @@ namespace MyCRM_Online.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult Edit(int? id)
+        public IActionResult Edit([FromQuery] int? stockArrivalId)
         {
             SetAllStockItemsListToViewBag();
 
-            if (id == null || id == 0)
+            if (stockArrivalId == null || stockArrivalId == 0)
             {
                 return NotFound();
             }
-            var source = dataContext.StockArrivals.Find(id);
+            var source = dataContext.StockArrivals.Find(stockArrivalId);
             var stockArrival = mapper.Map<StockArrivalEditViewModel>(source);
 
             if (stockArrival == null)

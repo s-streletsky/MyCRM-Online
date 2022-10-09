@@ -60,7 +60,7 @@
                             <span class="color-red" asp-validation-for="Notes"></span>
                         </td>
                         <td style="text-align: right;">
-                            <a class="btn btn-outline-secondary" asp-route-id="@Model.Id" asp-controller="Payments" asp-action="CreateFast">@SharedLocalizer["NewPayment"]</a>
+                            <a class="btn btn-outline-secondary" asp-route-orderId="@Model.Id" asp-controller="Payments" asp-action="CreateFast">@SharedLocalizer["NewPayment"]</a>
                             <input class="btn btn-success" type="submit" value="@SharedLocalizer["Save"]" />
                         </td>
                     </tr>
@@ -77,7 +77,7 @@
     <br>
 
     <div class="text-align-left margin-bottom-5">
-        <a class="btn btn-primary text-align-left" asp-route-id="@Model.Id" asp-controller="OrdersItems" asp-action="Create">@Localizer["AddItem"]</a>
+    <a class="btn btn-primary text-align-left" asp-route-orderId="@Model.Id" asp-controller="OrdersItems" asp-action="Create">@Localizer["AddItem"]</a>
     </div>
 
     <table class="table">

@@ -39,7 +39,7 @@
                     <td style="text-align: right;">
                         @using (Html.BeginForm(FormMethod.Post))
                         {
-                            <a class="btn btn-outline-secondary btn-sm" asp-route-id="@exchangeRate.Id" asp-action="Edit">@SharedLocalizer["Edit"]</a>
+                            <a class="btn btn-outline-secondary btn-sm" asp-route-exchangeRateId="@exchangeRate.Id" asp-action="Edit">@SharedLocalizer["Edit"]</a>
 
                             <button type="button" id="modalButton" class="btn btn-outline-danger btn-sm"
                                 data-exchangerate-id="@exchangeRate.Id"

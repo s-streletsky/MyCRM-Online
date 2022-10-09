@@ -9,7 +9,6 @@
 
 @model MyCRM_Online.Models.PageInfo<ClientViewModel>
 
-@*Clients/index*@
 <div class="text-center">
     <h2 class="display-4">@Localizer["Title"]</h2>
     <div class="text-align-left margin-bottom-5">
@@ -62,8 +61,8 @@
                         {
                          
                             
-                            <a class="btn btn-outline-success btn-sm" asp-route-id="@client.Id" asp-controller="Orders" asp-action="FastCreate">@SharedLocalizer["CreateOrder"]</a>
-                            <a class="btn btn-outline-secondary btn-sm" asp-route-id="@client.Id" asp-action="Edit">@SharedLocalizer["Edit"]</a>
+                            <a class="btn btn-outline-success btn-sm" asp-route-id="@client.Id" asp-controller="Orders" asp-action="CreateFast">@SharedLocalizer["CreateOrder"]</a>
+                            <a class="btn btn-outline-secondary btn-sm" asp-route-clientId="@client.Id" asp-action="Edit">@SharedLocalizer["Edit"]</a>
 
                             <button type="button" id="modalButton" class="btn btn-outline-danger btn-sm" data-client-id="@client.Id" data-client-name="@client.Name" data-bs-toggle="modal" data-bs-target="#deletionModal">
                                 @SharedLocalizer["Delete"]

@@ -59,16 +59,16 @@ namespace MyCRM_Online.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult Edit(int? id)
+        public IActionResult Edit([FromQuery] int? clientId)
         {
             SetAllCountriesListToViewBag();
             SetAllShippingMethodsListToViewBag();
 
-            if (id == null || id == 0)
+            if (clientId == null || clientId == 0)
             {
                 return NotFound();
             }
-            var source = dataContext.Clients.Find(id);
+            var source = dataContext.Clients.Find(clientId);
             var client = mapper.Map<ClientEditViewModel>(source);
 
             if (client == null)

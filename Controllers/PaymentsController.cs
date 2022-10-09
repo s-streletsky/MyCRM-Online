@@ -39,9 +39,9 @@ namespace MyCRM_Online.Controllers
             return View(pageInfo);
         }
 
-        public IActionResult CreateFast(int id)
+        public IActionResult CreateFast([FromQuery] int orderId)
         {
-            var order = dataContext.Orders.Find(id);
+            var order = dataContext.Orders.Find(orderId);
             var newPayment = new PaymentCreateViewModel();
 
             newPayment.ClientId = order.ClientId;
@@ -61,13 +61,13 @@ namespace MyCRM_Online.Controllers
             return RedirectToAction("Edit", "Orders", new { id = newPayment.OrderId });
         }
 
-        public IActionResult Edit(int? id)
+        public IActionResult Edit([FromQuery] int? paymentId)
         {
-            if (id == null || id == 0)
+            if (paymentId == null || paymentId == 0)
             {
                 return NotFound();
             }
-            var source = dataContext.Payments.Find(id);
+            var source = dataContext.Payments.Find(paymentId);
             var payment = mapper.Map<PaymentEditViewModel>(source);
 
             if (payment == null)

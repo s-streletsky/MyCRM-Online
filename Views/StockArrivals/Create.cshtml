@@ -23,7 +23,7 @@
             <div class="form-group">
                 <label asp-for="StockItemId">* @SharedLocalizer["StockItemName"]</label>
                 <select class="form-select" size="10" asp-for="StockItemId">
-                    <option value="-1">@SharedLocalizer["Select"]</option>
+                    <option selected value="-1">@SharedLocalizer["Select"]</option>
                     @foreach (var stockItem in ViewBag.StockItems)
                     {
                         <option value="@stockItem.Id">@stockItem.Name</option>

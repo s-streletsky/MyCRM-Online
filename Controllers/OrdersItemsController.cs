@@ -41,10 +41,10 @@ namespace MyCRM_Online.Controllers
             return View(pageInfo);
         }
 
-        public IActionResult Create([FromRoute] int id)
+        public IActionResult Create([FromQuery] int orderId)
         {
             ViewBag.StockItems = dataContext.StockItems.ToList();
-            var orderItem = new OrderItemCreateViewModel() { OrderId = id };
+            var orderItem = new OrderItemCreateViewModel() { OrderId = orderId };
 
             return View(orderItem);
         }

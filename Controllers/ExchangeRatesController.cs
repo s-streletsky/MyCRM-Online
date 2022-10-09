@@ -58,15 +58,15 @@ namespace MyCRM_Online.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult Edit(int? id)
+        public IActionResult Edit([FromQuery] int? exchangeRateId)
         {
             SetAllCurrenciesListToViewBag();
 
-            if (id == null || id == 0)
+            if (exchangeRateId == null || exchangeRateId == 0)
             {
                 return NotFound();
             }
-            var source = dataContext.ExchangeRates.Find(id);
+            var source = dataContext.ExchangeRates.Find(exchangeRateId);
             var exchangeRate = mapper.Map<ExchangeRateEditViewModel>(source);
 
             if (exchangeRate == null)

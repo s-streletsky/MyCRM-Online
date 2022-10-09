@@ -62,7 +62,7 @@ namespace MyCRM_Online.Controllers
             return RedirectToAction("Edit", new { id = newOrder.Id });
         }
 
-        public IActionResult FastCreate([FromRoute] int id)
+        public IActionResult CreateFast([FromRoute] int id)
         {
             var order = new OrderCreateViewModel() { ClientId = id };
             var newOrder = mapper.Map<OrderEntity>(order);
@@ -73,23 +73,23 @@ namespace MyCRM_Online.Controllers
 
             TempData["OrderId"] = newOrder.Id;
 
-            return RedirectToAction("Edit");
+            return RedirectToAction("Edit", new { orderId = newOrder.Id });
         }
 
-        public IActionResult Edit(int? id)
+        public IActionResult Edit([FromQuery] int? orderId)
         {
-            if (id == null || id == 0)
+            if (orderId == null || orderId == 0)
             {
-                id = (int)TempData["OrderId"];
+                orderId = (int)TempData["OrderId"];
             }
 
             SetOrderStatusesListToViewBag();
 
-            var source = dataContext.Orders.Find(id);
+            var source = dataContext.Orders.Find(orderId);
             var order = mapper.Map<OrderEditViewModel>(source);
-            ViewBag.OrderItems = dataContext.OrdersItems.Where(i => i.OrderId == id).ToList();
-            ViewBag.OrderTotal = dataContext.OrdersItems.Where(i => i.OrderId == id).Sum(i => i.Total);
-            ViewBag.PaymentsTotal = dataContext.Payments.Where(p => p.OrderId == id).Sum(p => p.Amount);
+            ViewBag.OrderItems = dataContext.OrdersItems.Where(i => i.OrderId == orderId).ToList();
+            ViewBag.OrderTotal = dataContext.OrdersItems.Where(i => i.OrderId == orderId).Sum(i => i.Total);
+            ViewBag.PaymentsTotal = dataContext.Payments.Where(p => p.OrderId == orderId).Sum(p => p.Amount);
             ViewBag.Debt = ViewBag.OrderTotal - ViewBag.PaymentsTotal;
 
             if (order == null)
