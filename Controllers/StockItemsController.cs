@@ -69,13 +69,14 @@ namespace MyCRM_Online.Controllers
 
         public IActionResult Edit([FromQuery] int? stockItemId)
         {
-            SetAllManufacturersListToViewBag();
-            SetAllCurrenciesListToViewBag();
-
             if (stockItemId == null || stockItemId == 0)
             {
                 return NotFound();
             }
+
+            SetAllManufacturersListToViewBag();
+            SetAllCurrenciesListToViewBag();
+
             var source = dataContext.StockItems.Find(stockItemId);
             var stockItem = mapper.Map<StockItemEditViewModel>(source);
 
