@@ -50,8 +50,16 @@ namespace MyCRM_Online.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create([FromForm] ExchangeRateCreateViewModel exchangeRate)
         {
+            if (!ModelState.IsValid)
+            {
+                SetAllCurrenciesListToViewBag();
+
+                return View(exchangeRate);
+            }
+
             var newExchangeRate = mapper.Map<ExchangeRateEntity>(exchangeRate);
             newExchangeRate.Date = dateTimeProvider.UtcNow;
             dataContext.ExchangeRates.Add(newExchangeRate);
@@ -60,36 +68,52 @@ namespace MyCRM_Online.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult Edit([FromQuery] int? exchangeRateId)
+        public IActionResult Edit([FromRoute] int? id)
         {
-            SetAllCurrenciesListToViewBag();
-
-            if (exchangeRateId == null || exchangeRateId == 0)
+            if (id == null || id == 0)
             {
                 return NotFound();
             }
-            var source = dataContext.ExchangeRates.Find(exchangeRateId);
-            var exchangeRate = mapper.Map<ExchangeRateEditViewModel>(source);
 
-            if (exchangeRate == null)
+            var entity = dataContext.ExchangeRates.Find(id);
+
+            if (entity == null)
             {
                 return NotFound();
             }
+
+            var exchangeRate = mapper.Map<ExchangeRateEditViewModel>(entity);
+
+            SetAllCurrenciesListToViewBag();                                    
+            
             return View(exchangeRate);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(ExchangeRateEditViewModel ExchangeRate)
+        public IActionResult Edit([FromRoute] int? id, ExchangeRateEditViewModel exchangeRate)
         {
-            if (ModelState.IsValid)
+            if (exchangeRate.Id != id)
             {
-                var entity = dataContext.ExchangeRates.Single<ExchangeRateEntity>(m => m.Id == ExchangeRate.Id);
-                mapper.Map(ExchangeRate, entity);
-                dataContext.SaveChanges();
-
-                return RedirectToAction("Index");
+                return BadRequest();
             }
+
+            if (!ModelState.IsValid)
+            {
+                SetAllCurrenciesListToViewBag();
+
+                return View(exchangeRate);                
+            }
+
+            var entity = dataContext.ExchangeRates.Find(id);
+
+            if (entity == null)
+            {
+                return NotFound();
+            }
+
+            mapper.Map(exchangeRate, entity);
+            dataContext.SaveChanges();
 
             return RedirectToAction("Index");
         }
@@ -97,6 +121,11 @@ namespace MyCRM_Online.Controllers
         [HttpPost]
         public IActionResult Delete([FromForm] int? id)
         {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
             dataContext.ExchangeRates.Remove(new ExchangeRateEntity() { Id = id });
             dataContext.SaveChanges();
 

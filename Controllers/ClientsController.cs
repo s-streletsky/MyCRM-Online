@@ -111,6 +111,12 @@ namespace MyCRM_Online.Controllers
             }
 
             var entity = dataContext.Clients.Find(id);
+
+            if (entity == null)
+            {
+                return NotFound();
+            }
+
             mapper.Map(client, entity);
             dataContext.SaveChanges();
 
