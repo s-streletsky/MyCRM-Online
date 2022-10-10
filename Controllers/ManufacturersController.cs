@@ -95,6 +95,12 @@ namespace MyCRM_Online.Controllers
             }
 
             var entity = dataContext.Manufacturers.Find(id);
+
+            if (entity == null)
+            {
+                return NotFound();
+            }
+
             mapper.Map(manufacturer, entity);
             dataContext.SaveChanges();
 

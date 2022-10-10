@@ -9,7 +9,7 @@ namespace MyCRM_Online.ViewModels.OrdersItems
 {
     public class OrderItemCreateViewModel
     {
-        public int OrderId { get; set; }
+        public int? OrderId { get; set; }
 
         [Range(1, int.MaxValue, ErrorMessage = "SelectStockItem")]
         public int StockItemId { get; set; }

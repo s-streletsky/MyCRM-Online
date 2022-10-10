@@ -43,20 +43,33 @@ namespace MyCRM_Online.Controllers
             return View(pageInfo);
         }
 
-        public IActionResult Create([FromQuery] int orderId)
+        public IActionResult Create([FromRoute] int? id)
         {
-            ViewBag.StockItems = dataContext.StockItems.ToList();
-            var orderItem = new OrderItemCreateViewModel() { OrderId = orderId };
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
+            var orderItem = new OrderItemCreateViewModel() { OrderId = id };
+            ViewBag.StockItems = dataContext.StockItems.ToList();            
 
             return View(orderItem);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create([FromForm] OrderItemCreateViewModel orderItem)
         {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.StockItems = dataContext.StockItems.ToList();
+
+                return View(orderItem);
+            }
+
             var exchangeRates = GetCurrentExchangeRates();
 
-            var entity = mapper.Map<OrderItemEntity>(orderItem);
+            var entity = mapper.Map<OrderItemEntity>(orderItem);                                   
             entity.StockItem = dataContext.StockItems.Find(orderItem.StockItemId);
 
             var orderItemStateProcessor = new OrderItemStateProcessor(exchangeRates);
@@ -68,49 +81,71 @@ namespace MyCRM_Online.Controllers
             return RedirectToAction("Edit", "Orders", new { id = entity.OrderId });
         }
 
-        public IActionResult Edit(int? id)
+        [HttpGet]
+        public IActionResult Edit([FromRoute] int? id)
         {
-            ViewBag.StockItems = dataContext.StockItems.ToList();
-
             if (id == null || id == 0)
             {
                 return NotFound();
             }
-            var source = dataContext.OrdersItems.Find(id);
-            var orderItem = mapper.Map<OrderItemEditViewModel>(source);
 
-            if (orderItem == null)
+            var entity = dataContext.OrdersItems.Find(id);
+
+            if (entity == null)
             {
                 return NotFound();
             }
+
+            ViewBag.StockItems = dataContext.StockItems.ToList();
+                     
+            var orderItem = mapper.Map<OrderItemEditViewModel>(entity);
+
             return View(orderItem);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(OrderItemEditViewModel orderItem)
+        public IActionResult Edit([FromRoute] int? id, OrderItemEditViewModel orderItem)
         {
-            if (ModelState.IsValid)
+            if (orderItem.Id != id)
             {
-                var exchangeRates = GetCurrentExchangeRates();
-
-                var entity = dataContext.OrdersItems.Single<OrderItemEntity>(c => c.Id == orderItem.Id);
-                mapper.Map(orderItem, entity);
-
-                var orderItemStateProcessor = new OrderItemStateProcessor(exchangeRates);
-                orderItemStateProcessor.Calculate(entity);
-
-                dataContext.SaveChanges();
-
-                return RedirectToAction("Edit", "Orders", new { id = entity.OrderId });
+                return BadRequest();
             }
 
-            return RedirectToAction("Edit", "Orders", new { id = orderItem.OrderId });
+            if (!ModelState.IsValid)
+            {
+                ViewBag.StockItems = dataContext.StockItems.ToList();
+
+                return View(orderItem);                
+            }
+
+            var entity = dataContext.OrdersItems.Find(id);
+
+            if (entity == null)
+            {
+                return NotFound();
+            }
+
+            var exchangeRates = GetCurrentExchangeRates();
+
+            mapper.Map(orderItem, entity);
+
+            var orderItemStateProcessor = new OrderItemStateProcessor(exchangeRates);
+            orderItemStateProcessor.Calculate(entity);
+
+            dataContext.SaveChanges();
+
+            return RedirectToAction("Edit", "Orders", new { id = entity.OrderId });
         }
 
         [HttpPost]
-        public IActionResult Delete([FromForm] int id)
+        public IActionResult Delete([FromForm] int? id)
         {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
             dataContext.OrdersItems.Remove(new OrderItemEntity() { Id = id });
             dataContext.SaveChanges();
 

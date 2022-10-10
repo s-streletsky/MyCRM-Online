@@ -21,11 +21,9 @@
 
     <form class="text-align-left" asp-antiforgery="true" asp-action="Edit" asp-controller="OrdersItems">
         <div>
-            <div class="validation" asp-validation-summary="ModelOnly"></div>
             <div class="form-group">
                 <label asp-for="StockItemId">* @SharedLocalizer["StockItemName"]</label>
                 <select class="form-select" size="10" asp-for="StockItemId">
-                    <option value="null">@SharedLocalizer["Select"]</option>
                     @foreach (var item in ViewBag.StockItems)
                     {
                         <option value="@item.Id">@item.Name</option>

@@ -8,7 +8,7 @@ namespace MyCRM_Online.Models.Entities
 {
     public class OrderItemEntity
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public int OrderId { get; set; }
         public OrderEntity Order { get; set; }
         public int StockItemId { get; set; }

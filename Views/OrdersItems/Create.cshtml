@@ -21,7 +21,6 @@
 
     <form class="text-align-left" asp-antiforgery="true" asp-action="Create" asp-controller="OrdersItems">
         <div>
-            <div class="validation" asp-validation-summary="ModelOnly"></div>
             <div class="form-group">
                 <label asp-for="StockItemId">* @SharedLocalizer["StockItemName"]</label>
                 <select class="form-select" size="10" asp-for="StockItemId">
@@ -44,7 +43,7 @@
                 <span class="color-red" asp-validation-for="Discount"></span>
             </div>
             <div class="form-group text-align-right">
-                <input hidden type="text" asp-for="OrderId" value="@Model.OrderId" />
+                <input hidden type="text" asp-for="OrderId" />
                 <input class="btn btn-primary" type="submit" value="@SharedLocalizer["Create"]" />
             </div>
         </div>
