@@ -41,20 +41,37 @@ namespace MyCRM_Online.Controllers
             return View(pageInfo);
         }
 
-        public IActionResult CreateFast([FromQuery] int orderId)
+        public IActionResult CreateFast([FromRoute] int? id)
         {
-            var order = dataContext.Orders.Find(orderId);
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
+            var orderEntity = dataContext.Orders.Find(id);
+
+            if (orderEntity == null)
+            {
+                return NotFound();
+            }
+
             var newPayment = new PaymentCreateViewModel();
 
-            newPayment.ClientId = order.ClientId;
-            newPayment.OrderId = order.Id;
+            newPayment.ClientId = orderEntity.ClientId;
+            newPayment.OrderId = orderEntity.Id;
 
             return View(newPayment);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult CreateFast([FromForm] PaymentCreateViewModel payment)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(payment);
+            }
+
             var newPayment = mapper.Map<PaymentEntity>(payment);
             newPayment.Date = dateTimeProvider.UtcNow;
             dataContext.Payments.Add(newPayment);
@@ -63,34 +80,48 @@ namespace MyCRM_Online.Controllers
             return RedirectToAction("Edit", "Orders", new { id = newPayment.OrderId });
         }
 
-        public IActionResult Edit([FromQuery] int? paymentId)
+        public IActionResult Edit([FromRoute] int? id)
         {
-            if (paymentId == null || paymentId == 0)
+            if (id == null || id == 0)
             {
                 return NotFound();
             }
-            var source = dataContext.Payments.Find(paymentId);
-            var payment = mapper.Map<PaymentEditViewModel>(source);
 
-            if (payment == null)
+            var entity = dataContext.Payments.Find(id);
+
+            if (entity == null)
             {
                 return NotFound();
             }
+
+            var payment = mapper.Map<PaymentEditViewModel>(entity);
+           
             return View(payment);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(PaymentEditViewModel payment)
+        public IActionResult Edit([FromRoute] int? id, PaymentEditViewModel payment)
         {
-            if (ModelState.IsValid)
+            if (payment.Id != id)
             {
-                var entity = dataContext.Payments.Single<PaymentEntity>(p => p.Id == payment.Id);
-                mapper.Map(payment, entity);
-                dataContext.SaveChanges();
-
-                return RedirectToAction("Index");
+                return BadRequest();
             }
+
+            if (!ModelState.IsValid)
+            {
+                return View(payment);                
+            }
+
+            var entity = dataContext.Payments.Find(id);
+
+            if (entity == null)
+            {
+                return NotFound();
+            }
+
+            mapper.Map(payment, entity);
+            dataContext.SaveChanges();
 
             return RedirectToAction("Index");
         }
@@ -98,6 +129,11 @@ namespace MyCRM_Online.Controllers
         [HttpPost]
         public IActionResult Delete([FromForm] int? id)
         {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
             dataContext.Payments.Remove(new PaymentEntity() { Id = id });
             dataContext.SaveChanges();
 

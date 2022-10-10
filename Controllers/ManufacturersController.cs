@@ -69,12 +69,13 @@ namespace MyCRM_Online.Controllers
             }
 
             var entity = dataContext.Manufacturers.Find(id);
-            var manufacturer = mapper.Map<ManufacturerEditViewModel>(entity);
 
-            if (manufacturer == null)
+            if (entity == null)
             {
                 return NotFound();
             }
+
+            var manufacturer = mapper.Map<ManufacturerEditViewModel>(entity);
 
             return View(manufacturer);
         }

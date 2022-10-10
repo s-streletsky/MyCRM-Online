@@ -20,7 +20,6 @@
 
     <form class="text-align-left" asp-antiforgery="true" asp-action="Create" asp-controller="Orders">
         <div>
-            <div class="validation" asp-validation-summary="ModelOnly"></div>
             <div class="form-group">
                 <label asp-for="ClientId">@SharedLocalizer["Client"]</label>
                 <select class="form-select" size="10" asp-for="ClientId">

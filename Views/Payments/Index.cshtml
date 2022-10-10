@@ -49,7 +49,7 @@
                         <td>@payment.Amount</td>
                         <td>@payment.Notes</td>
                         <td style="text-align: right;">
-                            <a class="btn btn-outline-secondary btn-sm" asp-route-paymentId="@payment.Id" asp-action="Edit">@SharedLocalizer["Edit"]</a>
+                            <a class="btn btn-outline-secondary btn-sm" asp-route-id="@payment.Id" asp-action="Edit">@SharedLocalizer["Edit"]</a>
 
                         <button type="button" id="modalButton" class="btn btn-outline-danger btn-sm" data-payment-id="@payment.Id" data-payment-date="@payment.Date" data-bs-toggle="modal" data-bs-target="#deletionModal">
                             @SharedLocalizer["Delete"]

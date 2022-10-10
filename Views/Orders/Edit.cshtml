@@ -33,7 +33,6 @@
         <tbody>
             <form asp-antiforgery="true" asp-action="Edit" asp-controller="Orders">
                 <div>
-                    <div class="validation" asp-validation-summary="ModelOnly"></div>
                     <tr class="text-vertical-align">
                         <td>
                             <label asp-for="Id">@Model.Id</label>
@@ -60,7 +59,7 @@
                             <span class="color-red" asp-validation-for="Notes"></span>
                         </td>
                         <td style="text-align: right;">
-                            <a class="btn btn-outline-secondary" asp-route-orderId="@Model.Id" asp-controller="Payments" asp-action="CreateFast">@SharedLocalizer["NewPayment"]</a>
+                            <a class="btn btn-outline-secondary" asp-route-id="@Model.Id" asp-controller="Payments" asp-action="CreateFast">@SharedLocalizer["NewPayment"]</a>
                             <input class="btn btn-success" type="submit" value="@SharedLocalizer["Save"]" />
                         </td>
                     </tr>

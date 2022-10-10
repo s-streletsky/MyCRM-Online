@@ -51,6 +51,7 @@ namespace MyCRM_Online.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create([FromForm] ClientCreateViewModel client)
         {
             if (!ModelState.IsValid)
@@ -77,17 +78,18 @@ namespace MyCRM_Online.Controllers
                 return NotFound();
             }
 
-            SetAllCountriesListToViewBag();
-            SetAllShippingMethodsListToViewBag();
-           
-            var source = dataContext.Clients.Find(id);
-            var client = mapper.Map<ClientEditViewModel>(source);
+            var entity = dataContext.Clients.Find(id);
 
-            if (client == null)
+            if (entity == null)
             {
                 return NotFound();
             }
 
+            SetAllCountriesListToViewBag();
+            SetAllShippingMethodsListToViewBag();
+                       
+            var client = mapper.Map<ClientEditViewModel>(entity);
+            
             return View(client);
         }
 
@@ -137,14 +139,15 @@ namespace MyCRM_Online.Controllers
                 return NotFound();
             }
 
-            var source = dataContext.Clients.Find(id);
-            var client = mapper.Map<ClientProfileViewModel>(source);
+            var entity = dataContext.Clients.Find(id);
 
-            if (client == null)
+            if (entity == null)
             {
                 return NotFound();
             }
 
+            var client = mapper.Map<ClientProfileViewModel>(entity);
+            
             client.OrdersQuantity = dataContext.Orders.Where(o => o.ClientId == id).Count();
             client.PaymentsTotal = dataContext.Payments.Where(p => p.ClientId == id).Sum(p => p.Amount);
 

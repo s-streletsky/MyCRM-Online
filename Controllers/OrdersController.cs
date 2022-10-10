@@ -51,15 +51,22 @@ namespace MyCRM_Online.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create([FromForm] OrderCreateViewModel order)
         {
+            if (!ModelState.IsValid)
+            {
+                SetAllClientsListToViewBag();
+                SetOrderStatusesListToViewBag();
+
+                return View(order);
+            }
+
             var newOrder = mapper.Map<OrderEntity>(order);
             newOrder.Date = dateTimeProvider.UtcNow;
             newOrder.StatusId = 4;
             dataContext.Orders.Add(newOrder);
             dataContext.SaveChanges();
-
-            //TempData["OrderId"] = newOrder.Id;
 
             return RedirectToAction("Edit", new { id = newOrder.Id });
         }
@@ -75,45 +82,61 @@ namespace MyCRM_Online.Controllers
 
             TempData["OrderId"] = newOrder.Id;
 
-            return RedirectToAction("Edit", new { orderId = newOrder.Id });
+            return RedirectToAction("Edit", new { id = newOrder.Id });
         }
 
-        public IActionResult Edit([FromQuery] int? orderId)
+        public IActionResult Edit([FromRoute] int? id)
         {
-            if (orderId == null || orderId == 0)
+            if (id == null || id == 0)
             {
-                orderId = (int)TempData["OrderId"];
+                id = (int)TempData["OrderId"];
             }
 
-            SetOrderStatusesListToViewBag();
+            var entity = dataContext.Orders.Find(id);
 
-            var source = dataContext.Orders.Find(orderId);
-            var order = mapper.Map<OrderEditViewModel>(source);
-            ViewBag.OrderItems = dataContext.OrdersItems.Where(i => i.OrderId == orderId).ToList();
-            ViewBag.OrderTotal = dataContext.OrdersItems.Where(i => i.OrderId == orderId).Sum(i => i.Total);
-            ViewBag.PaymentsTotal = dataContext.Payments.Where(p => p.OrderId == orderId).Sum(p => p.Amount);
-            ViewBag.Debt = ViewBag.OrderTotal - ViewBag.PaymentsTotal;
-
-            if (order == null)
+            if (entity == null)
             {
                 return NotFound();
             }
+
+            var order = mapper.Map<OrderEditViewModel>(entity);
+
+            SetOrderStatusesListToViewBag();
+            
+            ViewBag.OrderItems = dataContext.OrdersItems.Where(i => i.OrderId == id).ToList();
+            ViewBag.OrderTotal = dataContext.OrdersItems.Where(i => i.OrderId == id).Sum(i => i.Total);
+            ViewBag.PaymentsTotal = dataContext.Payments.Where(p => p.OrderId == id).Sum(p => p.Amount);
+            ViewBag.Debt = ViewBag.OrderTotal - ViewBag.PaymentsTotal;
+            
             return View(order);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromForm]OrderEditViewModel order)
+        public IActionResult Edit([FromRoute] int? id, OrderEditViewModel order)
         {
-            if (ModelState.IsValid)
+            if (order.Id != id)
             {
-                var entity = dataContext.Orders.Find(order.Id);
-                entity.StatusId = order.StatusId;
-                entity.Notes = order.Notes;
-                dataContext.SaveChanges();
-
-                return RedirectToAction("Index");
+                return BadRequest();
             }
+
+            if (!ModelState.IsValid)
+            {
+                SetOrderStatusesListToViewBag();
+
+                return View(order);                
+            }
+
+            var entity = dataContext.Orders.Find(order.Id);
+
+            if (entity == null)
+            {
+                return NotFound();
+            }
+
+            entity.StatusId = order.StatusId;
+            entity.Notes = order.Notes;
+            dataContext.SaveChanges();
 
             return RedirectToAction("Index");
         }
@@ -121,6 +144,11 @@ namespace MyCRM_Online.Controllers
         [HttpPost]
         public IActionResult Delete([FromForm] int? id)
         {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
             dataContext.Orders.Remove(new OrderEntity() { Id = id });
             dataContext.SaveChanges();
 
