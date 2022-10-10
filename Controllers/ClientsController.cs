@@ -51,8 +51,16 @@ namespace MyCRM_Online.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromForm]ClientCreateViewModel client)
+        public IActionResult Create([FromForm] ClientCreateViewModel client)
         {
+            if (!ModelState.IsValid)
+            {
+                SetAllCountriesListToViewBag();
+                SetAllShippingMethodsListToViewBag();
+
+                return View(client);                
+            }
+
             var newClient = mapper.Map<ClientEntity>(client);
             newClient.Date = dateTimeProvider.UtcNow;
             dataContext.Clients.Add(newClient);
@@ -61,37 +69,48 @@ namespace MyCRM_Online.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult Edit([FromQuery] int? clientId)
+        [HttpGet]
+        public IActionResult Edit([FromRoute] int? id)
         {
-            SetAllCountriesListToViewBag();
-            SetAllShippingMethodsListToViewBag();
-
-            if (clientId == null || clientId == 0)
+            if (id == null || id == 0)
             {
                 return NotFound();
             }
-            var source = dataContext.Clients.Find(clientId);
+
+            SetAllCountriesListToViewBag();
+            SetAllShippingMethodsListToViewBag();
+           
+            var source = dataContext.Clients.Find(id);
             var client = mapper.Map<ClientEditViewModel>(source);
 
             if (client == null)
             {
                 return NotFound();
             }
+
             return View(client);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(ClientEditViewModel client)
+        public IActionResult Edit([FromRoute] int? id, ClientEditViewModel client)
         {
-            if (ModelState.IsValid)
+            if (client.Id != id)
             {
-                var entity = dataContext.Clients.Single<ClientEntity>(c => c.Id == client.Id);
-                mapper.Map(client, entity);
-                dataContext.SaveChanges();
-
-                return RedirectToAction("Index");
+                return BadRequest();
             }
+
+            if (!ModelState.IsValid)
+            {
+                SetAllCountriesListToViewBag();
+                SetAllShippingMethodsListToViewBag();
+
+                return View(client);                
+            }
+
+            var entity = dataContext.Clients.Find(id);
+            mapper.Map(client, entity);
+            dataContext.SaveChanges();
 
             return RedirectToAction("Index");
         }
@@ -100,6 +119,11 @@ namespace MyCRM_Online.Controllers
         [HttpPost]
         public IActionResult Delete([FromForm]int? id)
         {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
             dataContext.Clients.Remove(new ClientEntity() { Id = id });
             dataContext.SaveChanges();
 
@@ -112,6 +136,7 @@ namespace MyCRM_Online.Controllers
             {
                 return NotFound();
             }
+
             var source = dataContext.Clients.Find(id);
             var client = mapper.Map<ClientProfileViewModel>(source);
 

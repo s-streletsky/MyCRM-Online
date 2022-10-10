@@ -35,7 +35,7 @@ namespace MyCRM_Online.Controllers
             var entities = await source.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
             var manufacturers = mapper.Map<List<ManufacturerEntity>>(entities);
 
-            var pageInfo = new PageInfo<ManufacturerEntity>(totalCount, page, pageSize, manufacturers);           
+            var pageInfo = new PageInfo<ManufacturerEntity>(totalCount, page, pageSize, manufacturers);
 
             return View(pageInfo);
         }
@@ -48,6 +48,11 @@ namespace MyCRM_Online.Controllers
         [HttpPost]
         public IActionResult Create([FromForm] ManufacturerCreateViewModel manufacturer)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(manufacturer);                
+            }
+
             var newManufacturer = mapper.Map<ManufacturerEntity>(manufacturer);
             dataContext.Manufacturers.Add(newManufacturer);
             dataContext.SaveChanges();
@@ -55,34 +60,42 @@ namespace MyCRM_Online.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult Edit([FromQuery] int? manufacturerId)
+        [HttpGet]
+        public IActionResult Edit([FromRoute] int? id)
         {
-            if (manufacturerId == null || manufacturerId == 0)
+            if (id == null || id == 0)
             {
                 return NotFound();
             }
-            var source = dataContext.Manufacturers.Find(manufacturerId);
-            var manufacturer = mapper.Map<ManufacturerEditViewModel>(source);
+
+            var entity = dataContext.Manufacturers.Find(id);
+            var manufacturer = mapper.Map<ManufacturerEditViewModel>(entity);
 
             if (manufacturer == null)
             {
                 return NotFound();
             }
+
             return View(manufacturer);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(ManufacturerEditViewModel manufacturer)
+        public IActionResult Edit([FromRoute] int? id, ManufacturerEditViewModel manufacturer)
         {
-            if (ModelState.IsValid)
+            if (manufacturer.Id != id)
             {
-                var entity = dataContext.Manufacturers.Single<ManufacturerEntity>(m => m.Id == manufacturer.Id);
-                mapper.Map(manufacturer, entity);
-                dataContext.SaveChanges();
-
-                return RedirectToAction("Index");
+                return BadRequest();
             }
+
+            if (!ModelState.IsValid)
+            {
+                return View(manufacturer);
+            }
+
+            var entity = dataContext.Manufacturers.Find(id);
+            mapper.Map(manufacturer, entity);
+            dataContext.SaveChanges();
 
             return RedirectToAction("Index");
         }
@@ -90,6 +103,11 @@ namespace MyCRM_Online.Controllers
         [HttpPost]
         public IActionResult Delete([FromForm] int? id)
         {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
             dataContext.Manufacturers.Remove(new ManufacturerEntity() { Id = id });
             dataContext.SaveChanges();
 

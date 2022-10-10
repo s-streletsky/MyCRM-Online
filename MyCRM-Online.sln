@@ -5,7 +5,12 @@ VisualStudioVersion = 17.3.32804.467
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyCRM-Online", "MyCRM-Online.csproj", "{683E6B00-3FC0-4122-8029-102F74603E68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyCRM-API", "..\MyCRM-API\MyCRM-API.csproj", "{B6F0EB79-3939-4D09-A52E-C46770E3C60D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyCRM-API", "..\MyCRM-API\MyCRM-API.csproj", "{B6F0EB79-3939-4D09-A52E-C46770E3C60D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EF3C7B03-E4FB-4985-A226-0DC7B73F4341}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
