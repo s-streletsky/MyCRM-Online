@@ -5,10 +5,7 @@ using MyCRM_Online.Models.Entities;
 namespace MyCRM_Online.Db
 {
     public class DataContext : DbContext
-    {
-        readonly static string dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.sqlite");
-
-        public DbSet<UserEntity> Users { get; set; }
+    {  
         public DbSet<ClientEntity> Clients { get; set; }
         public DbSet<CountryEntity> Countries { get; set; }
         public DbSet<ShippingMethodEntity> ShippingMethods { get; set; }
@@ -22,14 +19,10 @@ namespace MyCRM_Online.Db
         public DbSet<OrderStatusEntity> OrderStatuses { get; set; }
         public DbSet<PaymentEntity> Payments { get; set; }
 
-        static DataContext()
+        public DataContext(DbContextOptions<DataContext> options)
+            : base(options)
         {
-            InitializeDatabase();
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlite($"Data Source={dbPath}");
+            Database.Migrate();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -47,20 +40,8 @@ namespace MyCRM_Online.Db
             modelBuilder.Entity<OrderItemEntity>().Navigation(e => e.StockItem).AutoInclude();
             modelBuilder.Entity<PaymentEntity>().Navigation(e => e.Client).AutoInclude();
             modelBuilder.Entity<PaymentEntity>().Navigation(e => e.Order).AutoInclude();
-        }
 
-        public static void InitializeDatabase()
-        {
-            if (File.Exists(dbPath)) { return; }
-
-            using (var databaseContext = new DataContext())
-            {
-                var dbInitScript = File.ReadAllText("./Db/db.init.sql", Encoding.UTF8);
-                databaseContext.Database.ExecuteSqlRaw(dbInitScript);
-
-                //var dbDefaultData = File.ReadAllText("./Db/db.data.sql", Encoding.UTF8);
-                //databaseContext.Database.ExecuteSqlRaw(dbDefaultData);
-            }
+            modelBuilder.Seed();
         }
     }
 }

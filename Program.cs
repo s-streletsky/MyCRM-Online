@@ -26,6 +26,14 @@ builder.Services.TryAddScoped<DataContext>();
 builder.Services.TryAddSingleton<IDateTimeProvider, DateTimeProvider>();
 
 builder.Services
+    .AddDbContext<DataContext>(options => {
+        var connectionString = builder.Configuration.GetConnectionString("DataDbConnection");
+        var connectionBuilder = new SQLiteConnectionStringBuilder(connectionString);
+        connectionBuilder.DataSource = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, connectionBuilder.DataSource);
+        options.UseSqlite(connectionBuilder.ToString());
+    });
+
+builder.Services
     .AddDbContext<UsersContext>(options => {
         var connectionString = builder.Configuration.GetConnectionString("UsersDbConnection");
         var connectionBuilder = new SQLiteConnectionStringBuilder(connectionString);
