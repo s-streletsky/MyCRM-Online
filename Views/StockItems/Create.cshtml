@@ -19,7 +19,6 @@
 
     <form class="text-align-left" asp-antiforgery="true" asp-action="Create" asp-controller="StockItems">
         <div>
-            <div class="validation" asp-validation-summary="ModelOnly"></div>
             <div class="form-group">
                 <label asp-for="Name">* @SharedLocalizer["StockItemName"]</label>
                 <input class="form-control" type="text" asp-for="Name" />
@@ -28,7 +27,7 @@
             <div class="form-group">
                 <label asp-for="ManufacturerId">@SharedLocalizer["Manufacturer"]</label>
                 <select class="form-select" asp-for="ManufacturerId">
-                    <option value="">@SharedLocalizer["Select"]</option>
+                    <option selected value="">@SharedLocalizer["Select"]</option>
                     @foreach (var manufacturer in ViewBag.Manufacturers)
                     {
                         <option value="@manufacturer.Id">@manufacturer.Name</option>
@@ -42,7 +41,7 @@
             <div class="form-group">
                 <label asp-for="CurrencyId">* @SharedLocalizer["Currency"]</label>
                 <select class="form-select" asp-for="CurrencyId">
-                    <option value="-1">@SharedLocalizer["Select"]</option>
+                    <option selected value="-1">@SharedLocalizer["Select"]</option>
                     @foreach (var currency in ViewBag.Currencies)
                     {
                         <option value="@currency.Id">@currency.Code</option>

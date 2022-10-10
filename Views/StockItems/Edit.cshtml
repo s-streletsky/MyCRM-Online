@@ -19,7 +19,6 @@
 
     <form class="text-align-left" asp-antiforgery="true" asp-action="Edit" asp-controller="Stock">
         <div>
-            <div class="validation" asp-validation-summary="ModelOnly"></div>
             <div class="form-group">
                 <label asp-for="Name">* @SharedLocalizer["StockItemName"]</label>
                 <input class="form-control" type="text" asp-for="Name" />

@@ -57,7 +57,7 @@
                     <td style="text-align: right;">
                         @using (Html.BeginForm(FormMethod.Post))
                         {
-                            <a class="btn btn-outline-secondary btn-sm" asp-route-stockItemId="@stockItem.Id" asp-action="Edit">@SharedLocalizer["Edit"]</a>
+                            <a class="btn btn-outline-secondary btn-sm" asp-route-id="@stockItem.Id" asp-action="Edit">@SharedLocalizer["Edit"]</a>
 
                             <button type="button" id="modalButton" class="btn btn-outline-danger btn-sm" data-stockitem-id="@stockItem.Id" data-stockitem-name="@stockItem.Name" data-bs-toggle="modal" data-bs-target="#deletionModal">
                                 @SharedLocalizer["Delete"]

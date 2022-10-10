@@ -53,52 +53,70 @@ namespace MyCRM_Online.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create([FromForm] StockItemCreateViewModel stockItem)
         {
             if (ModelState.IsValid)
             {
-                var newStockItem = mapper.Map<StockItemEntity>(stockItem);
-                dataContext.StockItems.Add(newStockItem);
-                dataContext.SaveChanges();
+                SetAllManufacturersListToViewBag();
+                SetAllCurrenciesListToViewBag();
 
-                return RedirectToAction("Index");
+                return View(stockItem);
             }
 
-            return View();
+            var newStockItem = mapper.Map<StockItemEntity>(stockItem);
+            dataContext.StockItems.Add(newStockItem);
+            dataContext.SaveChanges();
+
+            return RedirectToAction("Index");
         }
 
-        public IActionResult Edit([FromQuery] int? stockItemId)
+        [HttpGet]
+        public IActionResult Edit([FromRoute] int? id)
         {
-            if (stockItemId == null || stockItemId == 0)
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
+            var entity = dataContext.StockItems.Find(id);
+
+            if (entity == null)
             {
                 return NotFound();
             }
 
             SetAllManufacturersListToViewBag();
             SetAllCurrenciesListToViewBag();
+            
+            var stockItem = mapper.Map<StockItemEditViewModel>(entity);
 
-            var source = dataContext.StockItems.Find(stockItemId);
-            var stockItem = mapper.Map<StockItemEditViewModel>(source);
-
-            if (stockItem == null)
-            {
-                return NotFound();
-            }
             return View(stockItem);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(StockItemEditViewModel stockItem)
+        public IActionResult Edit([FromRoute] int? id, StockItemEditViewModel stockItem)
         {
-            if (ModelState.IsValid)
+            if (stockItem.Id != id)
             {
-                var entity = dataContext.StockItems.Single<StockItemEntity>(s => s.Id == stockItem.Id);
-                mapper.Map(stockItem, entity);
-                dataContext.SaveChanges();
-
-                return RedirectToAction("Index");
+                return BadRequest();
             }
+
+            if (!ModelState.IsValid)
+            {
+                return View(stockItem);
+            }
+
+            var entity = dataContext.StockItems.Find(id);
+
+            if (entity == null)
+            {
+                return NotFound();
+            }
+
+            mapper.Map(stockItem, entity);
+            dataContext.SaveChanges();
 
             return RedirectToAction("Index");
         }
@@ -106,6 +124,11 @@ namespace MyCRM_Online.Controllers
         [HttpPost]
         public IActionResult Delete([FromForm] int? id)
         {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
             dataContext.StockItems.Remove(new StockItemEntity() { Id = id });
             dataContext.SaveChanges();
 
