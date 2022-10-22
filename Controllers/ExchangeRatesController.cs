@@ -11,6 +11,10 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyCRM_Online.ViewModels.ExchangeRates;
 using Microsoft.AspNetCore.Authorization;
+using MyCRM_Online.ViewModels.Clients;
+using Newtonsoft.Json;
+using System.Net.Http;
+using MyCRM_Online.Extensions;
 
 namespace MyCRM_Online.Controllers
 {
@@ -20,24 +24,27 @@ namespace MyCRM_Online.Controllers
         private readonly DataContext dataContext;
         private readonly IMapper mapper;
         private readonly IDateTimeProvider dateTimeProvider;
+        private readonly HttpClient httpClient;
 
-        public ExchangeRatesController(DataContext dataContext, IMapper mapper, IDateTimeProvider dateTimeProvider)
+        public ExchangeRatesController(DataContext dataContext, IMapper mapper, IDateTimeProvider dateTimeProvider, IHttpClientFactory factory)
         {
             this.dataContext = dataContext;
             this.mapper = mapper;
             this.dateTimeProvider = dateTimeProvider;
+            this.httpClient = factory.CreateClient("apiClient");
         }
 
         public async Task<IActionResult> Index(int page = 1)
         {
-            int pageSize = 5;
+            var pageInfo = new PageInfo<ExchangeRateViewModel>();
 
-            IQueryable<ExchangeRateEntity> source = dataContext.ExchangeRates;
-            var totalCount = await source.CountAsync();
-            var entities = await source.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
-            var exchangeRates = mapper.Map<List<ExchangeRateViewModel>>(entities);
+            using (var response = await httpClient.GetAsync($"/api/exchangerates?page={page}"))
+            {
+                response.ThrowOnHttpError();
 
-            var pageInfo = new PageInfo<ExchangeRateViewModel>(totalCount, page, pageSize, exchangeRates);
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                pageInfo = JsonConvert.DeserializeObject<PageInfo<ExchangeRateViewModel>>(apiResponse);
+            }
 
             return View(pageInfo);
         }
@@ -51,7 +58,7 @@ namespace MyCRM_Online.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([FromForm] ExchangeRateCreateViewModel exchangeRate)
+        public async Task<IActionResult> Create([FromForm] ExchangeRateCreateViewModel exchangeRate)
         {
             if (!ModelState.IsValid)
             {
@@ -60,29 +67,32 @@ namespace MyCRM_Online.Controllers
                 return View(exchangeRate);
             }
 
-            var newExchangeRate = mapper.Map<ExchangeRateEntity>(exchangeRate);
-            newExchangeRate.Date = dateTimeProvider.UtcNow;
-            dataContext.ExchangeRates.Add(newExchangeRate);
-            dataContext.SaveChanges();
+            var serializedExchangeRate = JsonConvert.SerializeObject(exchangeRate, Formatting.Indented);
+            var httpContent = new StringContent(serializedExchangeRate, Encoding.UTF8, "application/json");
+
+            using (var response = await httpClient.PostAsync($"/api/exchangerates", httpContent))
+            {
+                response.ThrowOnHttpError();
+            }
 
             return RedirectToAction("Index");
         }
 
-        public IActionResult Edit([FromRoute] int? id)
+        public async Task<IActionResult> Edit([FromRoute] int? id)
         {
-            if (id == null || id == 0)
-            {
+            if (id == null || id < 1) {
                 return NotFound();
             }
 
-            var entity = dataContext.ExchangeRates.Find(id);
+            ExchangeRateEditViewModel exchangeRate;
 
-            if (entity == null)
+            using (var response = await httpClient.GetAsync($"/api/exchangerates/{id}"))
             {
-                return NotFound();
-            }
+                response.ThrowOnHttpError();
 
-            var exchangeRate = mapper.Map<ExchangeRateEditViewModel>(entity);
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                exchangeRate = JsonConvert.DeserializeObject<ExchangeRateEditViewModel>(apiResponse);
+            }
 
             SetAllCurrenciesListToViewBag();                                    
             
@@ -91,43 +101,40 @@ namespace MyCRM_Online.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int? id, ExchangeRateEditViewModel exchangeRate)
+        public async Task<IActionResult> Edit([FromRoute] int? id, ExchangeRateEditViewModel exchangeRate)
         {
-            if (exchangeRate.Id != id)
-            {
+            if (exchangeRate.Id != id) {
                 return BadRequest();
             }
 
-            if (!ModelState.IsValid)
-            {
+            if (!ModelState.IsValid) {
                 SetAllCurrenciesListToViewBag();
 
                 return View(exchangeRate);                
             }
 
-            var entity = dataContext.ExchangeRates.Find(id);
+            var serializedExchangeRate = JsonConvert.SerializeObject(exchangeRate, Formatting.Indented);
+            var httpContent = new StringContent(serializedExchangeRate, Encoding.UTF8, "application/json");
 
-            if (entity == null)
+            using (var response = await httpClient.PutAsync($"/api/exchangerates", httpContent))
             {
-                return NotFound();
+                response.ThrowOnHttpError();
             }
-
-            mapper.Map(exchangeRate, entity);
-            dataContext.SaveChanges();
 
             return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public IActionResult Delete([FromForm] int? id)
+        public async Task<IActionResult> Delete([FromForm] int? id)
         {
-            if (id == null || id == 0)
-            {
+            if (id == null || id < 1) {
                 return NotFound();
             }
 
-            dataContext.ExchangeRates.Remove(new ExchangeRateEntity() { Id = id });
-            dataContext.SaveChanges();
+            using (var response = await httpClient.DeleteAsync($"/api/exchangerates/{id}"))
+            {
+                response.ThrowOnHttpError();
+            }
 
             return RedirectToAction("Index");
         }

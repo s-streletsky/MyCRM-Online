@@ -44,8 +44,8 @@ namespace MyCRM_Online.Controllers
             {
                 response.ThrowOnHttpError();
 
-                var responseContent = await response.Content.ReadAsStringAsync();
-                pageInfo = JsonConvert.DeserializeObject<PageInfo<ClientViewModel>>(responseContent);
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                pageInfo = JsonConvert.DeserializeObject<PageInfo<ClientViewModel>>(apiResponse);
             }
 
             return View(pageInfo);
