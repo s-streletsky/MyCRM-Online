@@ -1,29 +1,39 @@
 using MyCRM_Online.Db;
 using Microsoft.EntityFrameworkCore;
-using System;
-using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.DependencyInjection;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
 using MyCRM_Online;
 using Microsoft.AspNetCore.Identity;
-using System.Configuration;
 using System.Data.SQLite;
-using Microsoft.Data.Sqlite;
 using MyCRM_Online.Models.Entities;
-using System.Reflection;
+using Microsoft.AspNetCore.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
+
+#if DEBUG
+if (builder.Environment.IsProduction())
+{
+    builder.Configuration.AddUserSecrets<Program>();
+}
+#endif
 
 builder.Services.AddControllers(
     options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
 
+builder.Services.AddLogging(loggingBuilder => {
+    var loggingSection = builder.Configuration.GetSection("Logging");
+    loggingBuilder.AddFile(loggingSection);
+});
+
 builder.Services.AddAutoMapper(typeof(AppMappingProfile));
 builder.Services.TryAddScoped<DataContext>();
 builder.Services.TryAddSingleton<IDateTimeProvider, DateTimeProvider>();
+builder.Services.AddHttpClient("apiClient", c => {
+    c.BaseAddress = new System.Uri(builder.Configuration.GetValue<string>("Api:Uri"));
+    c.DefaultRequestHeaders.Add("X-Auth-Token", builder.Configuration.GetValue<string>("Api:Token"));
+});
 
 builder.Services
     .AddDbContext<DataContext>(options => {
@@ -59,6 +69,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
                 });
 
 builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+
 // Add services to the container.
 builder.Services.AddControllersWithViews()
     .AddDataAnnotationsLocalization()
@@ -80,9 +91,10 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler("/Error/Index");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }

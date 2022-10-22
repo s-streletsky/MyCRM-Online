@@ -13,10 +13,9 @@ namespace MyCRM_Online.ViewModels.Clients
         private DateTime date;
 
         public int Id { get; set; }
-        public DateTime Date
-        {
-            get { return date; }
-            set { date = value.ToLocalTime(); }
+        public DateTime Date {
+            get { return date.ToLocalTime(); }
+            set { date = value; }
         }
         public string Name { get; set; }
         public string? Nickname { get; set; }

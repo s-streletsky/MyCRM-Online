@@ -1,14 +1,20 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using MyCRM_Online.Db;
+using MyCRM_Online.Extensions;
 using MyCRM_Online.Models;
 using MyCRM_Online.Models.Entities;
 using MyCRM_Online.ViewModels.Clients;
+using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Drawing.Printing;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text;
 
 namespace MyCRM_Online.Controllers
 {
@@ -19,25 +25,28 @@ namespace MyCRM_Online.Controllers
         private readonly DataContext dataContext;
         private readonly IMapper mapper;
         private readonly IDateTimeProvider dateTimeProvider;
+        private readonly HttpClient httpClient;
 
-        public ClientsController(ILogger<ClientsController> logger, DataContext dataContext, IMapper mapper, IDateTimeProvider dateTimeProvider)
+        public ClientsController(ILogger<ClientsController> logger, DataContext dataContext, IMapper mapper, IDateTimeProvider dateTimeProvider, IHttpClientFactory factory)
         {
             this.logger = logger;
             this.dataContext = dataContext;
             this.mapper = mapper;
             this.dateTimeProvider = dateTimeProvider;
+            this.httpClient = factory.CreateClient("apiClient");
         }
 
         public async Task<IActionResult> Index(int page = 1)
         {
-            int pageSize = 5;
+            var pageInfo = new PageInfo<ClientViewModel>();
 
-            IQueryable<ClientEntity> source = dataContext.Clients;
-            var totalCount = await source.CountAsync();
-            var entities = await source.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
-            var clients = mapper.Map<List<ClientViewModel>>(entities);
+            using (var response = await httpClient.GetAsync($"/api/clients?page={page}"))
+            {
+                response.ThrowOnHttpError();
 
-            var pageInfo = new PageInfo<ClientViewModel>(totalCount, page, pageSize, clients);
+                var responseContent = await response.Content.ReadAsStringAsync();
+                pageInfo = JsonConvert.DeserializeObject<PageInfo<ClientViewModel>>(responseContent);
+            }
 
             return View(pageInfo);
         }
@@ -52,7 +61,7 @@ namespace MyCRM_Online.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([FromForm] ClientCreateViewModel client)
+        public async Task<IActionResult> Create([FromForm] ClientCreateViewModel client)
         {
             if (!ModelState.IsValid)
             {
@@ -62,40 +71,43 @@ namespace MyCRM_Online.Controllers
                 return View(client);                
             }
 
-            var newClient = mapper.Map<ClientEntity>(client);
-            newClient.Date = dateTimeProvider.UtcNow;
-            dataContext.Clients.Add(newClient);
-            dataContext.SaveChanges();
+            var serializedClient = JsonConvert.SerializeObject(client, Formatting.Indented);
+            var httpContent = new StringContent(serializedClient, Encoding.UTF8, "application/json");
+
+            using (var response = await httpClient.PostAsync($"/api/clients", httpContent))
+            {
+                response.ThrowOnHttpError();
+            }
 
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public IActionResult Edit([FromRoute] int? id)
+        public async Task<IActionResult> Edit([FromRoute] int? id)
         {
-            if (id == null || id == 0)
-            {
+            if (id == null || id < 1) {
                 return NotFound();
             }
 
-            var entity = dataContext.Clients.Find(id);
+            ClientEditViewModel client;
 
-            if (entity == null)
+            using (var response = await httpClient.GetAsync($"/api/clients/{id}"))
             {
-                return NotFound();
+                response.ThrowOnHttpError();
+
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                client = JsonConvert.DeserializeObject<ClientEditViewModel>(apiResponse);
             }
 
             SetAllCountriesListToViewBag();
             SetAllShippingMethodsListToViewBag();
-                       
-            var client = mapper.Map<ClientEditViewModel>(entity);
-            
+
             return View(client);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int? id, ClientEditViewModel client)
+        public async Task<IActionResult> Edit([FromRoute] int? id, ClientEditViewModel client)
         {
             if (client.Id != id)
             {
@@ -110,52 +122,40 @@ namespace MyCRM_Online.Controllers
                 return View(client);                
             }
 
-            var entity = dataContext.Clients.Find(id);
+            var serializedClient = JsonConvert.SerializeObject(client, Formatting.Indented);
+            var httpContent = new StringContent(serializedClient, Encoding.UTF8, "application/json");
 
-            if (entity == null)
+            using (var response = await httpClient.PutAsync($"/api/clients", httpContent))
             {
-                return NotFound();
+                response.ThrowOnHttpError();
             }
-
-            mapper.Map(client, entity);
-            dataContext.SaveChanges();
 
             return RedirectToAction("Index");
         }
 
         [Route("")]
         [HttpPost]
-        public IActionResult Delete([FromForm]int? id)
+        public async Task<IActionResult> Delete([FromForm] int id)
         {
-            if (id == null || id == 0)
+            using (var response = await httpClient.DeleteAsync($"/api/clients/{id}"))
             {
-                return NotFound();
+                response.ThrowOnHttpError();
             }
-
-            dataContext.Clients.Remove(new ClientEntity() { Id = id });
-            dataContext.SaveChanges();
 
             return RedirectToAction("Index");
         }
 
-        public IActionResult Profile(int? id)
+        public async Task<IActionResult> Profile(int id)
         {
-            if (id == null || id == 0)
+            ClientProfileViewModel client;
+
+            using (var response = await httpClient.GetAsync($"/api/clients/{id}/profile"))
             {
-                return NotFound();
+                response.ThrowOnHttpError();
+
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                client = JsonConvert.DeserializeObject<ClientProfileViewModel>(apiResponse);
             }
-
-            var entity = dataContext.Clients.Find(id);
-
-            if (entity == null)
-            {
-                return NotFound();
-            }
-
-            var client = mapper.Map<ClientProfileViewModel>(entity);
-            
-            client.OrdersQuantity = dataContext.Orders.Where(o => o.ClientId == id).Count();
-            client.PaymentsTotal = dataContext.Payments.Where(p => p.ClientId == id).Sum(p => p.Amount);
 
             return View(client);
         }

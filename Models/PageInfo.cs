@@ -10,8 +10,10 @@ namespace MyCRM_Online.Models
     public class PageInfo<T>
     {
         public IEnumerable<T> Items { get; set; }
-        public int CurrentPage { get; private set; }
-        public int TotalPages { get; private set; }
+        public int CurrentPage { get; set; }
+        public int TotalPages { get; set; }
+
+        public PageInfo() { }
 
         public PageInfo(int totalCount, int currentPage, int pageSize, IEnumerable<T> items)
         {
@@ -20,20 +22,12 @@ namespace MyCRM_Online.Models
             TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
         }
 
-        public bool HasPreviousPage
-        {
-            get
-            {
-                return (CurrentPage > 1);
-            }
+        public bool HasPreviousPage {
+            get { return (CurrentPage > 1); }
         }
 
-        public bool HasNextPage
-        {
-            get
-            {
-                return (CurrentPage < TotalPages);
-            }
+        public bool HasNextPage {
+            get { return (CurrentPage < TotalPages); }
         }
     }
 }

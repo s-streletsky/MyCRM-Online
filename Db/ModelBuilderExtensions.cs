@@ -23,8 +23,7 @@ namespace MyCRM_Online.Db
                 .HasData(
                    new CurrencyEntity { Id = 1, Code = "EUR" },
                    new CurrencyEntity { Id = 2, Code = "USD" },
-                   new CurrencyEntity { Id = 3, Code = "UAH" },
-                   new CurrencyEntity { Id = 4, Code = "GBP" }
+                   new CurrencyEntity { Id = 3, Code = "UAH" }
             );
 
             modelBuilder.Entity<ShippingMethodEntity>()
