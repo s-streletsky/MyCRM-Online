@@ -11,6 +11,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyCRM_Online.ViewModels.Orders;
+using MyCRM_Online.ViewModels.Clients;
+using Newtonsoft.Json;
+using System.Net.Http;
+using MyCRM_Online.Extensions;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Http;
 
 namespace MyCRM_Online.Controllers
 {
@@ -20,151 +26,175 @@ namespace MyCRM_Online.Controllers
         private readonly DataContext dataContext;
         private readonly IMapper mapper;
         private readonly IDateTimeProvider dateTimeProvider;
+        private readonly HttpClient httpClient;
 
-        public OrdersController(DataContext dataContext, IMapper mapper, IDateTimeProvider dateTimeProvider)
+        public OrdersController(DataContext dataContext, IMapper mapper, IDateTimeProvider dateTimeProvider, IHttpClientFactory factory)
         {
             this.dataContext = dataContext;
             this.mapper = mapper;
             this.dateTimeProvider = dateTimeProvider;
+            this.httpClient = factory.CreateClient("apiClient");
         }
 
         public async Task<IActionResult> Index(int page = 1)
         {
-            int pageSize = 5;
+            var pageInfo = new PageInfo<OrderViewModel>();
 
-            IQueryable<OrderEntity> source = dataContext.Orders;
-            var totalCount = await source.CountAsync();
-            var entities = await source.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
-            var orders = mapper.Map<List<OrderViewModel>>(entities);
+            using (var response = await httpClient.GetAsync($"/api/orders?page={page}"))
+            {
+                response.ThrowOnHttpError();
 
-            var pageInfo = new PageInfo<OrderViewModel>(totalCount, page, pageSize, orders);
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                pageInfo = JsonConvert.DeserializeObject<PageInfo<OrderViewModel>>(apiResponse);
+            }
 
             return View(pageInfo);
         }        
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            SetAllClientsListToViewBag();
-            SetOrderStatusesListToViewBag();
+            await SetAllClientsListToViewBagAsync();
+            await SetOrderStatusesListToViewBagAsync();
 
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([FromForm] OrderCreateViewModel order)
+        public async Task<IActionResult> Create([FromForm] OrderCreateViewModel order)
         {
-            if (!ModelState.IsValid)
-            {
-                SetAllClientsListToViewBag();
-                SetOrderStatusesListToViewBag();
+            if (!ModelState.IsValid) {
+                await SetAllClientsListToViewBagAsync();
+                await SetOrderStatusesListToViewBagAsync();
 
                 return View(order);
             }
 
-            var newOrder = mapper.Map<OrderEntity>(order);
-            newOrder.Date = dateTimeProvider.UtcNow;
-            newOrder.StatusId = 4;
-            dataContext.Orders.Add(newOrder);
-            dataContext.SaveChanges();
+            var serializedClient = JsonConvert.SerializeObject(order, Formatting.Indented);
+            var httpContent = new StringContent(serializedClient, Encoding.UTF8, "application/json");
 
-            return RedirectToAction("Edit", new { id = newOrder.Id });
+            var createdOrder = new OrderViewModel();
+
+            using (var response = await httpClient.PostAsync($"/api/orders", httpContent))
+            {
+                response.ThrowOnHttpError();
+
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                createdOrder = JsonConvert.DeserializeObject<OrderViewModel>(apiResponse);
+            }
+
+            return RedirectToAction("Edit", new { id = createdOrder.Id });
         }
 
-        public IActionResult CreateFast([FromRoute] int id)
+        public async Task<IActionResult> CreateFast([FromRoute] int id)
         {
             var order = new OrderCreateViewModel() { ClientId = id };
-            var newOrder = mapper.Map<OrderEntity>(order);
-            newOrder.Date = DateTime.UtcNow;
-            newOrder.StatusId = 4;
-            dataContext.Orders.Add(newOrder);
-            dataContext.SaveChanges();
 
-            TempData["OrderId"] = newOrder.Id;
+            var serializedOrder = JsonConvert.SerializeObject(order, Formatting.Indented);
+            var httpContent = new StringContent(serializedOrder, Encoding.UTF8, "application/json");
 
-            return RedirectToAction("Edit", new { id = newOrder.Id });
+            OrderViewModel createdOrder;
+
+            using (var response = await httpClient.PostAsync($"/api/orders", httpContent))
+            {
+                response.ThrowOnHttpError();
+
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                createdOrder = JsonConvert.DeserializeObject<OrderViewModel>(apiResponse);
+            }
+
+            TempData["OrderId"] = createdOrder.Id;
+
+            return RedirectToAction("Edit", new { id = createdOrder.Id });
         }
 
-        public IActionResult Edit([FromRoute] int? id)
+        public async Task<IActionResult> Edit([FromRoute] int? id)
         {
-            if (id == null || id == 0)
-            {
+            if (id == null || id < 1) {
                 id = (int)TempData["OrderId"];
             }
 
-            var entity = dataContext.Orders.Find(id);
+            OrderEditViewModel order;
 
-            if (entity == null)
+            using (var response = await httpClient.GetAsync($"/api/orders/{id}"))
             {
-                return NotFound();
+                response.ThrowOnHttpError();
+
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                order = JsonConvert.DeserializeObject<OrderEditViewModel>(apiResponse);
             }
 
-            var order = mapper.Map<OrderEditViewModel>(entity);
-
-            SetOrderStatusesListToViewBag();
-            
-            ViewBag.OrderItems = dataContext.OrdersItems.Where(i => i.OrderId == id).ToList();
-            ViewBag.OrderTotal = dataContext.OrdersItems.Where(i => i.OrderId == id).Sum(i => i.Total);
-            ViewBag.PaymentsTotal = dataContext.Payments.Where(p => p.OrderId == id).Sum(p => p.Amount);
-            ViewBag.Debt = ViewBag.OrderTotal - ViewBag.PaymentsTotal;
+            await SetOrderStatusesListToViewBagAsync();           
             
             return View(order);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int? id, OrderEditViewModel order)
+        public async Task<IActionResult> Edit([FromRoute] int? id, OrderEditViewModel order)
         {
-            if (order.Id != id)
-            {
+            if (order.Id != id) {
                 return BadRequest();
             }
 
-            if (!ModelState.IsValid)
-            {
-                SetOrderStatusesListToViewBag();
+            if (!ModelState.IsValid) {
+                await SetOrderStatusesListToViewBagAsync();
 
                 return View(order);                
             }
 
-            var entity = dataContext.Orders.Find(order.Id);
+            var serializedOrder = JsonConvert.SerializeObject(order, Formatting.Indented);
+            var httpContent = new StringContent(serializedOrder, Encoding.UTF8, "application/json");
 
-            if (entity == null)
-            {
-                return NotFound();
+            using (var response = await httpClient.PutAsync($"/api/orders", httpContent)) {
+                response.ThrowOnHttpError();
             }
-
-            entity.StatusId = order.StatusId;
-            entity.Notes = order.Notes;
-            dataContext.SaveChanges();
 
             return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public IActionResult Delete([FromForm] int? id)
+        public async Task<IActionResult> Delete([FromForm] int? id)
         {
-            if (id == null || id == 0)
-            {
+            if (id == null || id < 1) {
                 return NotFound();
             }
 
-            dataContext.Orders.Remove(new OrderEntity() { Id = id });
-            dataContext.SaveChanges();
+            using (var response = await httpClient.DeleteAsync($"/api/orders/{id}")) {
+                response.ThrowOnHttpError();
+            }
 
             return RedirectToAction("Index");
         }
 
-        private void SetAllClientsListToViewBag()
+        private async Task SetAllClientsListToViewBagAsync()
         {
-            var clients = dataContext.Clients.ToList();
+            IEnumerable<ClientViewModel> clients;
+
+            using (var response = await httpClient.GetAsync($"/api/clients/list"))
+            {
+                response.ThrowOnHttpError();
+
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                clients = JsonConvert.DeserializeObject<IEnumerable<ClientViewModel>>(apiResponse);
+            }
+
             ViewBag.Clients = clients;
         }
 
-        private void SetOrderStatusesListToViewBag()
+        private async Task SetOrderStatusesListToViewBagAsync()
         {
-            var statuses = dataContext.OrderStatuses.ToList();
-            ViewBag.Statuses = statuses;
+            IEnumerable<OrderStatusEntity> orderStatuses;
+
+            using (var response = await httpClient.GetAsync($"/api/orderstatuses/list"))
+            {
+                response.ThrowOnHttpError();
+
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                orderStatuses = JsonConvert.DeserializeObject<IEnumerable<OrderStatusEntity>>(apiResponse);
+            }
+
+            ViewBag.Statuses = orderStatuses;
         }
     }
 }

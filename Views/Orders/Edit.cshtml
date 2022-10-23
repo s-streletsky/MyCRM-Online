@@ -69,9 +69,9 @@
     </table>
 
     <div class="text-align-left">
-        <h4>К оплате: @ViewBag.OrderTotal</h4>
-        <h4>Оплачено: @ViewBag.PaymentsTotal</h4>
-        <h4>Долг: @ViewBag.Debt</h4>
+        <h4>К оплате: @Model.Total</h4>
+        <h4>Оплачено: @Model.PaymentsTotal</h4>
+        <h4>Долг: @Model.Debt</h4>
     </div>    
     <br>
 
@@ -93,7 +93,7 @@
             </tr>
         </thead>
         <tbody>            
-            @foreach (var item in ViewBag.OrderItems) {
+            @foreach (var item in Model.Items) {
                 <tr>
                     <td>@(orderItemPosition++)</td>
                     <td>@item.StockItem.Name</td>
