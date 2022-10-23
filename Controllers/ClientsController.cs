@@ -109,13 +109,11 @@ namespace MyCRM_Online.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromRoute] int? id, ClientEditViewModel client)
         {
-            if (client.Id != id)
-            {
+            if (client.Id != id) {
                 return BadRequest();
             }
 
-            if (!ModelState.IsValid)
-            {
+            if (!ModelState.IsValid) {
                 SetAllCountriesListToViewBag();
                 SetAllShippingMethodsListToViewBag();
 
