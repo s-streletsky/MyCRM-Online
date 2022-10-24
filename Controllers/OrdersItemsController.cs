@@ -12,6 +12,12 @@ using Microsoft.EntityFrameworkCore;
 using MyCRM_Online.Processors;
 using MyCRM_Online.ViewModels.OrdersItems;
 using Microsoft.AspNetCore.Authorization;
+using MyCRM_Online.ViewModels.Clients;
+using Newtonsoft.Json;
+using System.Net.Http;
+using MyCRM_Online.Extensions;
+using MyCRM_Online.ViewModels.Currencies;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace MyCRM_Online.Controllers
 {
@@ -21,167 +27,135 @@ namespace MyCRM_Online.Controllers
         private readonly DataContext dataContext;
         private readonly IMapper mapper;
         private readonly IDateTimeProvider dateTimeProvider;
+        private readonly HttpClient httpClient;
 
-        public OrdersItemsController(DataContext dataContext, IMapper mapper, IDateTimeProvider dateTimeProvider)
+        public OrdersItemsController(DataContext dataContext, IMapper mapper, IDateTimeProvider dateTimeProvider, IHttpClientFactory factory)
         {
             this.dataContext = dataContext;
             this.mapper = mapper;
             this.dateTimeProvider = dateTimeProvider;
+            this.httpClient = factory.CreateClient("apiClient");
         }
 
         public async Task<IActionResult> Index(int page = 1)
         {
-            int pageSize = 5;
+            var pageInfo = new PageInfo<OrderItemViewModel>();
 
-            IQueryable<OrderItemEntity> source = dataContext.OrdersItems;
-            var totalCount = await source.CountAsync();
-            var entities = await source.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
-            var orderItems = mapper.Map<List<OrderItemViewModel>>(entities);
+            using (var response = await httpClient.GetAsync($"/api/ordersitems?page={page}")) {
+                response.ThrowOnHttpError();
 
-            var pageInfo = new PageInfo<OrderItemViewModel>(totalCount, page, pageSize, orderItems);
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                pageInfo = JsonConvert.DeserializeObject<PageInfo<OrderItemViewModel>>(apiResponse);
+            }
 
             return View(pageInfo);
         }
 
-        public IActionResult Create([FromRoute] int? id)
+        public async Task<IActionResult> Create([FromRoute] int? id)
         {
-            if (id == null || id == 0)
-            {
+            if (id == null || id < 1) {
                 return NotFound();
             }
 
             var orderItem = new OrderItemCreateViewModel() { OrderId = id };
-            ViewBag.StockItems = dataContext.StockItems.ToList();            
+            await SetAllStockItemsListToViewBagAsync();
 
             return View(orderItem);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([FromForm] OrderItemCreateViewModel orderItem)
+        public async Task<IActionResult> Create([FromForm] OrderItemCreateViewModel orderItem)
         {
-            if (!ModelState.IsValid)
-            {
-                ViewBag.StockItems = dataContext.StockItems.ToList();
+            if (!ModelState.IsValid) {
+                await SetAllStockItemsListToViewBagAsync();
 
                 return View(orderItem);
             }
 
-            var exchangeRates = GetCurrentExchangeRates();
+            var serializedOrderItem = JsonConvert.SerializeObject(orderItem, Formatting.Indented);
+            var httpContent = new StringContent(serializedOrderItem, Encoding.UTF8, "application/json");
 
-            var entity = mapper.Map<OrderItemEntity>(orderItem);                                   
-            entity.StockItem = dataContext.StockItems.Find(orderItem.StockItemId);
+            using (var response = await httpClient.PostAsync($"/api/ordersitems", httpContent)) {
+                response.ThrowOnHttpError();
+            }
 
-            var orderItemStateProcessor = new OrderItemStateProcessor(exchangeRates);
-            orderItemStateProcessor.Calculate(entity);
-
-            dataContext.OrdersItems.Add(entity);
-            dataContext.SaveChanges();
-
-            return RedirectToAction("Edit", "Orders", new { id = entity.OrderId });
+            return RedirectToAction("Edit", "Orders", new { id = orderItem.OrderId });
         }
 
         [HttpGet]
-        public IActionResult Edit([FromRoute] int? id)
+        public async Task<IActionResult> Edit([FromRoute] int? id)
         {
-            if (id == null || id == 0)
-            {
+            if (id == null || id < 1) {
                 return NotFound();
             }
 
-            var entity = dataContext.OrdersItems.Find(id);
+            OrderItemEditViewModel orderItem;
 
-            if (entity == null)
+            using (var response = await httpClient.GetAsync($"/api/ordersitems/{id}"))
             {
-                return NotFound();
+                response.ThrowOnHttpError();
+
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                orderItem = JsonConvert.DeserializeObject<OrderItemEditViewModel>(apiResponse);
             }
 
-            ViewBag.StockItems = dataContext.StockItems.ToList();
-                     
-            var orderItem = mapper.Map<OrderItemEditViewModel>(entity);
+            await SetAllStockItemsListToViewBagAsync();                    
 
             return View(orderItem);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int? id, OrderItemEditViewModel orderItem)
+        public async Task<IActionResult> Edit([FromRoute] int? id, OrderItemEditViewModel orderItem)
         {
-            if (orderItem.Id != id)
-            {
+            if (orderItem.Id != id) {
                 return BadRequest();
             }
 
-            if (!ModelState.IsValid)
-            {
-                ViewBag.StockItems = dataContext.StockItems.ToList();
+            if (!ModelState.IsValid) {
+                await SetAllStockItemsListToViewBagAsync();
 
                 return View(orderItem);                
             }
 
-            var entity = dataContext.OrdersItems.Find(id);
+            var serializedOrderItem = JsonConvert.SerializeObject(orderItem, Formatting.Indented);
+            var httpContent = new StringContent(serializedOrderItem, Encoding.UTF8, "application/json");
 
-            if (entity == null)
-            {
-                return NotFound();
+            using (var response = await httpClient.PutAsync($"/api/ordersitems", httpContent)) {
+                response.ThrowOnHttpError();
             }
 
-            var exchangeRates = GetCurrentExchangeRates();
-
-            mapper.Map(orderItem, entity);
-
-            var orderItemStateProcessor = new OrderItemStateProcessor(exchangeRates);
-            orderItemStateProcessor.Calculate(entity);
-
-            dataContext.SaveChanges();
-
-            return RedirectToAction("Edit", "Orders", new { id = entity.OrderId });
+            return RedirectToAction("Edit", "Orders", new { id = orderItem.OrderId });
         }
 
         [HttpPost]
-        public IActionResult Delete([FromForm] int? id)
+        public async Task<IActionResult> Delete([FromForm] int? id)
         {
-            if (id == null || id == 0)
-            {
+            if (id == null || id < 1) {
                 return NotFound();
             }
 
-            dataContext.OrdersItems.Remove(new OrderItemEntity() { Id = id });
-            dataContext.SaveChanges();
-
-            return Redirect(Request.Headers["Referer"].ToString());
-        }
-
-        private IEnumerable<ExchangeRateEntity> GetCurrentExchangeRates()
-        {
-            var currencies = dataContext.Currencies.ToList();
-            var exchangeRates = new List<ExchangeRateEntity>();
-
-            foreach (var currency in currencies)
-            {
-                var currentExchangeRate = dataContext.ExchangeRates
-                    .Where(e => e.CurrencyId == currency.Id)
-                    .OrderByDescending(e => e.Id)
-                    .FirstOrDefault();
-
-                if (currentExchangeRate != null)
-                    exchangeRates.Add(currentExchangeRate);
-
-                else
-                {
-                    var defaultExchangeRate = new ExchangeRateEntity()
-                    {
-                        Id = -1,
-                        Date = dateTimeProvider.UtcNow,
-                        CurrencyId = currency.Id,
-                        Value = 1
-                    };
-
-                    exchangeRates.Add(defaultExchangeRate);
-                }                
+            using (var response = await httpClient.DeleteAsync($"/api/ordersitems/{id}")) {
+                response.ThrowOnHttpError();
             }
 
-            return exchangeRates;
+            return Redirect(Request.Headers["Referer"].ToString());
+        }     
+
+        private async Task SetAllStockItemsListToViewBagAsync()
+        {
+            IEnumerable<StockItemEntity> stockItems;
+
+            using (var response = await httpClient.GetAsync($"/api/stockitems/list"))
+            {
+                response.ThrowOnHttpError();
+
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                stockItems = JsonConvert.DeserializeObject<IEnumerable<StockItemEntity>>(apiResponse);
+            }
+
+            ViewBag.StockItems = stockItems;
         }
     }
 }

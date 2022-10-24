@@ -21,15 +21,13 @@ namespace MyCRM_Online.Controllers
     [Authorize]
     public class ClientsController : Controller
     {
-        private readonly ILogger<ClientsController> logger;
         private readonly DataContext dataContext;
         private readonly IMapper mapper;
         private readonly IDateTimeProvider dateTimeProvider;
         private readonly HttpClient httpClient;
 
-        public ClientsController(ILogger<ClientsController> logger, DataContext dataContext, IMapper mapper, IDateTimeProvider dateTimeProvider, IHttpClientFactory factory)
+        public ClientsController(DataContext dataContext, IMapper mapper, IDateTimeProvider dateTimeProvider, IHttpClientFactory factory)
         {
-            this.logger = logger;
             this.dataContext = dataContext;
             this.mapper = mapper;
             this.dateTimeProvider = dateTimeProvider;
