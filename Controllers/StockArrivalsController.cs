@@ -11,6 +11,11 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyCRM_Online.ViewModels.StockArrivals;
 using Microsoft.AspNetCore.Authorization;
+using MyCRM_Online.ViewModels.StockItems;
+using Newtonsoft.Json;
+using System.Net.Http;
+using MyCRM_Online.Extensions;
+using MyCRM_Online.ViewModels.Clients;
 
 namespace MyCRM_Online.Controllers
 {
@@ -20,122 +25,128 @@ namespace MyCRM_Online.Controllers
         private readonly DataContext dataContext;
         private readonly IMapper mapper;
         private readonly IDateTimeProvider dateTimeProvider;
+        private readonly HttpClient httpClient;
 
-        public StockArrivalsController(DataContext dataContext, IMapper mapper, IDateTimeProvider dateTimeProvider)
+        public StockArrivalsController(DataContext dataContext, IMapper mapper, IDateTimeProvider dateTimeProvider, IHttpClientFactory factory)
         {
             this.dataContext = dataContext;
             this.mapper = mapper;
             this.dateTimeProvider = dateTimeProvider;
+            this.httpClient = factory.CreateClient("apiClient");
         }
 
         public async Task<IActionResult> Index(int page = 1)
         {
-            int pageSize = 5;
+            var pageInfo = new PageInfo<StockArrivalViewModel>();
 
-            IQueryable<StockArrivalEntity> source = dataContext.StockArrivals;
-            var totalCount = await source.CountAsync();
-            var entities = await source.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
-            var stockArrivals = mapper.Map<List<StockArrivalViewModel>>(entities);
+            using (var response = await httpClient.GetAsync($"/api/stockarrivals?page={page}")) {
+                response.ThrowOnHttpError();
 
-            var pageInfo = new PageInfo<StockArrivalViewModel>(totalCount, page, pageSize, stockArrivals);
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                pageInfo = JsonConvert.DeserializeObject<PageInfo<StockArrivalViewModel>>(apiResponse);
+            }
 
             return View(pageInfo);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            SetAllStockItemsListToViewBag();
+            await SetAllStockItemsListToViewBagAsync();
 
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([FromForm] StockArrivalCreateViewModel stockArrival)
+        public async Task<IActionResult> Create([FromForm] StockArrivalCreateViewModel stockArrival)
         {
-            if (!ModelState.IsValid)
-            {
-                SetAllStockItemsListToViewBag();
+            if (!ModelState.IsValid) {
+                await SetAllStockItemsListToViewBagAsync();
 
                 return View(stockArrival);
             }
 
-            var newStockArrival = mapper.Map<StockArrivalEntity>(stockArrival);
-            newStockArrival.Date = dateTimeProvider.UtcNow;
-            dataContext.StockArrivals.Add(newStockArrival);
-            dataContext.SaveChanges();
+            var serializedStockArrival = JsonConvert.SerializeObject(stockArrival, Formatting.Indented);
+            var httpContent = new StringContent(serializedStockArrival, Encoding.UTF8, "application/json");
+
+            using (var response = await httpClient.PostAsync($"/api/stockarrivals", httpContent)) {
+                response.ThrowOnHttpError();
+            }
 
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public IActionResult Edit([FromRoute] int? id)
+        public async Task<IActionResult> Edit([FromRoute] int? id)
         {
-            if (id == null || id == 0)
-            {
+            if (id == null || id < 1) {
                 return NotFound();
             }
 
-            var entity = dataContext.StockArrivals.Find(id);
+            StockArrivalEditViewModel stockArrival;
 
-            if (entity == null)
+            using (var response = await httpClient.GetAsync($"/api/stockarrivals/{id}"))
             {
-                return NotFound();
+                response.ThrowOnHttpError();
+
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                stockArrival = JsonConvert.DeserializeObject<StockArrivalEditViewModel>(apiResponse);
             }
 
-            SetAllStockItemsListToViewBag();
-
-            var stockArrival = mapper.Map<StockArrivalEditViewModel>(entity);
+            await SetAllStockItemsListToViewBagAsync();
 
             return View(stockArrival);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int? id, StockArrivalEditViewModel stockArrival)
+        public async Task<IActionResult> Edit([FromRoute] int? id, StockArrivalEditViewModel stockArrival)
         {
-            if (stockArrival.Id != id)
-            {
+            if (stockArrival.Id != id) {
                 return BadRequest();
             }
 
-            if (!ModelState.IsValid)
-            {
-                SetAllStockItemsListToViewBag();
+            if (!ModelState.IsValid) {
+                await SetAllStockItemsListToViewBagAsync();
 
                 return View(stockArrival);
             }
 
-            var entity = dataContext.StockArrivals.Find(id);
+            var serializedStockArrival = JsonConvert.SerializeObject(stockArrival, Formatting.Indented);
+            var httpContent = new StringContent(serializedStockArrival, Encoding.UTF8, "application/json");
 
-            if (entity == null)
-            {
-                return NotFound();
+            using (var response = await httpClient.PutAsync($"/api/stockarrivals", httpContent)) {
+                response.ThrowOnHttpError();
             }
-
-            mapper.Map(stockArrival, entity);
-            dataContext.SaveChanges();
 
             return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public IActionResult Delete([FromForm] int? id)
+        public async Task<IActionResult> Delete([FromForm] int? id)
         {
-            if (id == null || id == 0)
-            {
+            if (id == null || id < 1) {
                 return NotFound();
             }
 
-            dataContext.StockArrivals.Remove(new StockArrivalEntity() { Id = id });
-            dataContext.SaveChanges();
+            using (var response = await httpClient.DeleteAsync($"/api/stockarrivals/{id}")) {
+                response.ThrowOnHttpError();
+            }
 
             return RedirectToAction("Index");
         }
 
-        private void SetAllStockItemsListToViewBag()
+        private async Task SetAllStockItemsListToViewBagAsync()
         {
-            var stockItems = dataContext.StockItems.ToList();
+            IEnumerable<StockItemEntity> stockItems;
+
+            using (var response = await httpClient.GetAsync($"/api/stockitems/list")) {
+                response.ThrowOnHttpError();
+
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                stockItems = JsonConvert.DeserializeObject<IEnumerable<StockItemEntity>>(apiResponse);
+            }
+
             ViewBag.StockItems = stockItems;
         }
     }
