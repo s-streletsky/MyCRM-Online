@@ -36,10 +36,7 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <ul class="nav">
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Home"]</a>
-                            </li>
-                            <li class="nav-item dropdown">
+                                <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     @Localizer["Clients"]
                                 </a>
@@ -77,7 +74,7 @@
                         </ul>
                     }                                       
                 </div>
-                <form asp-controller="Home" asp-action="SetLanguage" asp-route-returnUrl="@Context.Request.Path" method="post" class="form-inline">
+                <form asp-controller="Clients" asp-action="SetLanguage" asp-route-returnUrl="@Context.Request.Path" method="post" class="form-inline">
                 <label class="sr-only" for="langSelector">@Localizer["Language"]:</label>
                     <select id="langSelector" class="form-select inline auto-width" name="culture" onchange="this.form.submit();"
                                                     asp-for="@requestCulture.RequestCulture.UICulture.Name"

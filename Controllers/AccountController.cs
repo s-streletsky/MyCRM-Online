@@ -45,7 +45,7 @@ namespace MyCRM_Online.Controllers
                 if (result.Succeeded)
                 {
                     await signInManager.SignInAsync(user, false);
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Orders");
                 }
                 else
                 {
@@ -81,7 +81,7 @@ namespace MyCRM_Online.Controllers
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Orders");
                     }
                 }
                 else
@@ -123,7 +123,7 @@ namespace MyCRM_Online.Controllers
 
             string[] userInfo = { info.Principal.FindFirst(ClaimTypes.Name).Value, info.Principal.FindFirst(ClaimTypes.Email).Value };
             if (result.Succeeded)
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Orders");
             else
             {
                 UserEntity user = new UserEntity
@@ -139,7 +139,7 @@ namespace MyCRM_Online.Controllers
                     if (identResult.Succeeded)
                     {
                         await signInManager.SignInAsync(user, false);
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Orders");
                     }
                 }
 
