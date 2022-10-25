@@ -44,7 +44,7 @@
                         <td>
                             @if (payment.Order != null)
                             {
-                                <a asp-route-orderId="@payment.Order.Id" asp-controller="Orders" asp-action="Edit">@payment.Order.Id</a>
+                                <a asp-route-id="@payment.Order.Id" asp-controller="Orders" asp-action="Edit">@payment.Order.Id</a>
                             }
                         </td>
                         <td>@payment.Amount</td>
