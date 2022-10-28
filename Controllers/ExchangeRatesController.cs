@@ -1,44 +1,31 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using MyCRM_Online.Db;
-using MyCRM_Online.Models.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
 using MyCRM_Online.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using MyCRM_Online.ViewModels.ExchangeRates;
 using Microsoft.AspNetCore.Authorization;
-using MyCRM_Online.ViewModels.Clients;
 using Newtonsoft.Json;
-using System.Net.Http;
 using MyCRM_Online.Extensions;
+using MyCRM_Online.ViewModels.Currencies;
 
 namespace MyCRM_Online.Controllers
 {
     [Authorize]
     public class ExchangeRatesController : Controller
     {
-        private readonly DataContext dataContext;
-        private readonly IMapper mapper;
         private readonly IDateTimeProvider dateTimeProvider;
         private readonly HttpClient httpClient;
 
-        public ExchangeRatesController(DataContext dataContext, IMapper mapper, IDateTimeProvider dateTimeProvider, IHttpClientFactory factory)
+        public ExchangeRatesController(IDateTimeProvider dateTimeProvider, IHttpClientFactory factory)
         {
-            this.dataContext = dataContext;
-            this.mapper = mapper;
             this.dateTimeProvider = dateTimeProvider;
             this.httpClient = factory.CreateClient("apiClient");
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
         {
             var pageInfo = new PageInfo<ExchangeRateViewModel>();
 
-            using (var response = await httpClient.GetAsync($"/api/exchangerates?page={page}"))
+            using (var response = await httpClient.GetAsync($"api/exchangerates?page={page}&pageSize={pageSize}"))
             {
                 response.ThrowOnHttpError();
 
@@ -49,9 +36,9 @@ namespace MyCRM_Online.Controllers
             return View(pageInfo);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            SetAllCurrenciesListToViewBag();
+            await SetAllCurrenciesListToViewBagAsync();
 
             return View();
         }
@@ -62,7 +49,7 @@ namespace MyCRM_Online.Controllers
         {
             if (!ModelState.IsValid)
             {
-                SetAllCurrenciesListToViewBag();
+                await SetAllCurrenciesListToViewBagAsync();
 
                 return View(exchangeRate);
             }
@@ -70,7 +57,7 @@ namespace MyCRM_Online.Controllers
             var serializedExchangeRate = JsonConvert.SerializeObject(exchangeRate, Formatting.Indented);
             var httpContent = new StringContent(serializedExchangeRate, Encoding.UTF8, "application/json");
 
-            using (var response = await httpClient.PostAsync($"/api/exchangerates", httpContent))
+            using (var response = await httpClient.PostAsync($"api/exchangerates", httpContent))
             {
                 response.ThrowOnHttpError();
             }
@@ -86,7 +73,7 @@ namespace MyCRM_Online.Controllers
 
             ExchangeRateEditViewModel exchangeRate;
 
-            using (var response = await httpClient.GetAsync($"/api/exchangerates/{id}"))
+            using (var response = await httpClient.GetAsync($"api/exchangerates/{id}"))
             {
                 response.ThrowOnHttpError();
 
@@ -94,8 +81,8 @@ namespace MyCRM_Online.Controllers
                 exchangeRate = JsonConvert.DeserializeObject<ExchangeRateEditViewModel>(apiResponse);
             }
 
-            SetAllCurrenciesListToViewBag();                                    
-            
+            await SetAllCurrenciesListToViewBagAsync();
+
             return View(exchangeRate);
         }
 
@@ -108,7 +95,7 @@ namespace MyCRM_Online.Controllers
             }
 
             if (!ModelState.IsValid) {
-                SetAllCurrenciesListToViewBag();
+                await SetAllCurrenciesListToViewBagAsync();
 
                 return View(exchangeRate);                
             }
@@ -116,7 +103,7 @@ namespace MyCRM_Online.Controllers
             var serializedExchangeRate = JsonConvert.SerializeObject(exchangeRate, Formatting.Indented);
             var httpContent = new StringContent(serializedExchangeRate, Encoding.UTF8, "application/json");
 
-            using (var response = await httpClient.PutAsync($"/api/exchangerates", httpContent))
+            using (var response = await httpClient.PutAsync($"api/exchangerates", httpContent))
             {
                 response.ThrowOnHttpError();
             }
@@ -131,7 +118,7 @@ namespace MyCRM_Online.Controllers
                 return NotFound();
             }
 
-            using (var response = await httpClient.DeleteAsync($"/api/exchangerates/{id}"))
+            using (var response = await httpClient.DeleteAsync($"api/exchangerates/{id}"))
             {
                 response.ThrowOnHttpError();
             }
@@ -139,9 +126,18 @@ namespace MyCRM_Online.Controllers
             return RedirectToAction("Index");
         }
 
-        private void SetAllCurrenciesListToViewBag()
+        private async Task SetAllCurrenciesListToViewBagAsync()
         {
-            var currencies = dataContext.Currencies.ToList();
+            IEnumerable<CurrencyViewModel> currencies;
+
+            using (var response = await httpClient.GetAsync($"api/currencies/list"))
+            {
+                response.ThrowOnHttpError();
+
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                currencies = JsonConvert.DeserializeObject<IEnumerable<CurrencyViewModel>>(apiResponse);
+            }
+
             ViewBag.Currencies = currencies;
         }
     }

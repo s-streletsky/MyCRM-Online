@@ -1,13 +1,4 @@
-﻿using MyCRM_Online.Models;
-using MyCRM_Online.ViewModels.Clients;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MyCRM_Online.Extensions
+﻿namespace MyCRM_Online.Extensions
 {
     public static class HttpResponseMessageExtensions
     {

@@ -1,47 +1,31 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using MyCRM_Online.Db;
+﻿using Microsoft.AspNetCore.Mvc;
 using MyCRM_Online.Models.Entities;
 using MyCRM_Online.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using MyCRM_Online.Processors;
 using MyCRM_Online.ViewModels.OrdersItems;
 using Microsoft.AspNetCore.Authorization;
-using MyCRM_Online.ViewModels.Clients;
 using Newtonsoft.Json;
-using System.Net.Http;
 using MyCRM_Online.Extensions;
-using MyCRM_Online.ViewModels.Currencies;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace MyCRM_Online.Controllers
 {
     [Authorize]
     public class OrdersItemsController : Controller
     {
-        private readonly DataContext dataContext;
-        private readonly IMapper mapper;
         private readonly IDateTimeProvider dateTimeProvider;
         private readonly HttpClient httpClient;
 
-        public OrdersItemsController(DataContext dataContext, IMapper mapper, IDateTimeProvider dateTimeProvider, IHttpClientFactory factory)
+        public OrdersItemsController(IDateTimeProvider dateTimeProvider, IHttpClientFactory factory)
         {
-            this.dataContext = dataContext;
-            this.mapper = mapper;
             this.dateTimeProvider = dateTimeProvider;
             this.httpClient = factory.CreateClient("apiClient");
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
         {
             var pageInfo = new PageInfo<OrderItemViewModel>();
 
-            using (var response = await httpClient.GetAsync($"/api/ordersitems?page={page}")) {
+            using (var response = await httpClient.GetAsync($"api/ordersitems?page={page}&pageSize={pageSize}")) {
                 response.ThrowOnHttpError();
 
                 var apiResponse = await response.Content.ReadAsStringAsync();
@@ -76,7 +60,7 @@ namespace MyCRM_Online.Controllers
             var serializedOrderItem = JsonConvert.SerializeObject(orderItem, Formatting.Indented);
             var httpContent = new StringContent(serializedOrderItem, Encoding.UTF8, "application/json");
 
-            using (var response = await httpClient.PostAsync($"/api/ordersitems", httpContent)) {
+            using (var response = await httpClient.PostAsync($"api/ordersitems", httpContent)) {
                 response.ThrowOnHttpError();
             }
 
@@ -92,7 +76,7 @@ namespace MyCRM_Online.Controllers
 
             OrderItemEditViewModel orderItem;
 
-            using (var response = await httpClient.GetAsync($"/api/ordersitems/{id}"))
+            using (var response = await httpClient.GetAsync($"api/ordersitems/{id}"))
             {
                 response.ThrowOnHttpError();
 
@@ -122,7 +106,7 @@ namespace MyCRM_Online.Controllers
             var serializedOrderItem = JsonConvert.SerializeObject(orderItem, Formatting.Indented);
             var httpContent = new StringContent(serializedOrderItem, Encoding.UTF8, "application/json");
 
-            using (var response = await httpClient.PutAsync($"/api/ordersitems", httpContent)) {
+            using (var response = await httpClient.PutAsync($"api/ordersitems", httpContent)) {
                 response.ThrowOnHttpError();
             }
 
@@ -136,7 +120,7 @@ namespace MyCRM_Online.Controllers
                 return NotFound();
             }
 
-            using (var response = await httpClient.DeleteAsync($"/api/ordersitems/{id}")) {
+            using (var response = await httpClient.DeleteAsync($"api/ordersitems/{id}")) {
                 response.ThrowOnHttpError();
             }
 
@@ -147,7 +131,7 @@ namespace MyCRM_Online.Controllers
         {
             IEnumerable<StockItemEntity> stockItems;
 
-            using (var response = await httpClient.GetAsync($"/api/stockitems/list"))
+            using (var response = await httpClient.GetAsync($"api/stockitems/list"))
             {
                 response.ThrowOnHttpError();
 

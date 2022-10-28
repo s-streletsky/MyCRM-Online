@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.Metrics;
-
-namespace MyCRM_Online.Models.Entities
+﻿namespace MyCRM_Online.Models.Entities
 {
     public class ClientEntity
     {

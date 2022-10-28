@@ -27,21 +27,11 @@ builder.Services.AddLogging(loggingBuilder => {
     loggingBuilder.AddFile(loggingSection);
 });
 
-builder.Services.AddAutoMapper(typeof(AppMappingProfile));
-builder.Services.TryAddScoped<DataContext>();
 builder.Services.TryAddSingleton<IDateTimeProvider, DateTimeProvider>();
 builder.Services.AddHttpClient("apiClient", c => {
     c.BaseAddress = new System.Uri(builder.Configuration.GetValue<string>("Api:Uri"));
-    c.DefaultRequestHeaders.Add("X-Auth-Token", builder.Configuration.GetValue<string>("Api:Token"));
+    c.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", builder.Configuration.GetValue<string>("Api:Token"));
 });
-
-builder.Services
-    .AddDbContext<DataContext>(options => {
-        var connectionString = builder.Configuration.GetConnectionString("DataDbConnection");
-        var connectionBuilder = new SQLiteConnectionStringBuilder(connectionString);
-        connectionBuilder.DataSource = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, connectionBuilder.DataSource);
-        options.UseSqlite(connectionBuilder.ToString());
-    });
 
 builder.Services
     .AddDbContext<UsersContext>(options => {

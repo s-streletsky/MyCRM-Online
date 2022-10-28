@@ -1,19 +1,10 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using MyCRM_Online.Db;
+﻿using Microsoft.AspNetCore.Mvc;
 using MyCRM_Online.Models.Entities;
 using MyCRM_Online.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using MyCRM_Online.ViewModels.Payments;
 using Microsoft.AspNetCore.Authorization;
-using MyCRM_Online.ViewModels.Clients;
 using Newtonsoft.Json;
-using System.Net.Http;
 using MyCRM_Online.Extensions;
 
 namespace MyCRM_Online.Controllers
@@ -21,24 +12,20 @@ namespace MyCRM_Online.Controllers
     [Authorize]
     public class PaymentsController : Controller
     {
-        private readonly DataContext dataContext;
-        private readonly IMapper mapper;
         private readonly IDateTimeProvider dateTimeProvider;
         private readonly HttpClient httpClient;
 
-        public PaymentsController(DataContext dataContext, IMapper mapper, IDateTimeProvider dateTimeProvider, IHttpClientFactory factory)
+        public PaymentsController(IDateTimeProvider dateTimeProvider, IHttpClientFactory factory)
         {
-            this.dataContext = dataContext;
-            this.mapper = mapper;
             this.dateTimeProvider = dateTimeProvider;
             this.httpClient = factory.CreateClient("apiClient");
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
         {
             var pageInfo = new PageInfo<PaymentViewModel>();
 
-            using (var response = await httpClient.GetAsync($"/api/payments?page={page}")) {
+            using (var response = await httpClient.GetAsync($"api/payments?page={page}&pageSize={pageSize}")) {
                 response.ThrowOnHttpError();
 
                 var apiResponse = await response.Content.ReadAsStringAsync();
@@ -56,7 +43,7 @@ namespace MyCRM_Online.Controllers
 
             OrderEntity order;
 
-            using (var response = await httpClient.GetAsync($"/api/orders/{id}")) {
+            using (var response = await httpClient.GetAsync($"api/orders/{id}")) {
                 response.ThrowOnHttpError();
 
                 var apiResponse = await response.Content.ReadAsStringAsync();
@@ -82,7 +69,7 @@ namespace MyCRM_Online.Controllers
             var serializedPayment = JsonConvert.SerializeObject(payment, Formatting.Indented);
             var httpContent = new StringContent(serializedPayment, Encoding.UTF8, "application/json");
 
-            using (var response = await httpClient.PostAsync($"/api/payments", httpContent)) {
+            using (var response = await httpClient.PostAsync($"api/payments", httpContent)) {
                 response.ThrowOnHttpError();
             }
 
@@ -97,7 +84,7 @@ namespace MyCRM_Online.Controllers
 
             PaymentEditViewModel payment;
 
-            using (var response = await httpClient.GetAsync($"/api/payments/{id}")) {
+            using (var response = await httpClient.GetAsync($"api/payments/{id}")) {
                 response.ThrowOnHttpError();
 
                 var apiResponse = await response.Content.ReadAsStringAsync();
@@ -122,7 +109,7 @@ namespace MyCRM_Online.Controllers
             var serializedPayment = JsonConvert.SerializeObject(payment, Formatting.Indented);
             var httpContent = new StringContent(serializedPayment, Encoding.UTF8, "application/json");
 
-            using (var response = await httpClient.PutAsync($"/api/payments", httpContent)) {
+            using (var response = await httpClient.PutAsync($"api/payments", httpContent)) {
                 response.ThrowOnHttpError();
             }
 
@@ -136,7 +123,7 @@ namespace MyCRM_Online.Controllers
                 return NotFound();
             }
 
-            using (var response = await httpClient.DeleteAsync($"/api/payments/{id}")) {
+            using (var response = await httpClient.DeleteAsync($"api/payments/{id}")) {
                 response.ThrowOnHttpError();
             }
 

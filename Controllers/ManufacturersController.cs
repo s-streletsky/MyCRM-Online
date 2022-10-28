@@ -1,19 +1,10 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyCRM_Online.Db;
 using MyCRM_Online.Models.Entities;
 using MyCRM_Online.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using MyCRM_Online.ViewModels.Manufacturers;
-using MyCRM_Online.ViewModels.ExchangeRates;
 using Newtonsoft.Json;
-using System.Net.Http;
 using MyCRM_Online.Extensions;
 
 namespace MyCRM_Online.Controllers
@@ -21,22 +12,18 @@ namespace MyCRM_Online.Controllers
     [Authorize]
     public class ManufacturersController : Controller
     {
-        private readonly DataContext dataContext;
-        private readonly IMapper mapper;
         private readonly HttpClient httpClient;
 
-        public ManufacturersController(DataContext dataContext, IMapper mapper, IHttpClientFactory factory)
+        public ManufacturersController(IHttpClientFactory factory)
         {
-            this.dataContext = dataContext;
-            this.mapper = mapper;
             this.httpClient = factory.CreateClient("apiClient");
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
         {
             var pageInfo = new PageInfo<ManufacturerEntity>();
 
-            using (var response = await httpClient.GetAsync($"/api/manufacturers?page={page}"))
+            using (var response = await httpClient.GetAsync($"api/manufacturers?page={page}&pageSize={pageSize}"))
             {
                 response.ThrowOnHttpError();
 
@@ -63,7 +50,7 @@ namespace MyCRM_Online.Controllers
             var serializedManufacturer = JsonConvert.SerializeObject(manufacturer, Formatting.Indented);
             var httpContent = new StringContent(serializedManufacturer, Encoding.UTF8, "application/json");
 
-            using (var response = await httpClient.PostAsync($"/api/manufacturers", httpContent))
+            using (var response = await httpClient.PostAsync($"api/manufacturers", httpContent))
             {
                 response.ThrowOnHttpError();
             }
@@ -80,7 +67,7 @@ namespace MyCRM_Online.Controllers
 
             ManufacturerEditViewModel manufacturer;
 
-            using (var response = await httpClient.GetAsync($"/api/manufacturers/{id}"))
+            using (var response = await httpClient.GetAsync($"api/manufacturers/{id}"))
             {
                 response.ThrowOnHttpError();
 
@@ -106,7 +93,7 @@ namespace MyCRM_Online.Controllers
             var serializedManufacturer = JsonConvert.SerializeObject(manufacturer, Formatting.Indented);
             var httpContent = new StringContent(serializedManufacturer, Encoding.UTF8, "application/json");
 
-            using (var response = await httpClient.PutAsync($"/api/manufacturers", httpContent))
+            using (var response = await httpClient.PutAsync($"api/manufacturers", httpContent))
             {
                 response.ThrowOnHttpError();
             }
@@ -121,7 +108,7 @@ namespace MyCRM_Online.Controllers
                 return NotFound();
             }
 
-            using (var response = await httpClient.DeleteAsync($"/api/manufacturers/{id}")) {
+            using (var response = await httpClient.DeleteAsync($"api/manufacturers/{id}")) {
                 response.ThrowOnHttpError();
             }
 

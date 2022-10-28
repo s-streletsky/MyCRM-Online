@@ -1,46 +1,32 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyCRM_Online.Db;
 using MyCRM_Online.Models.Entities;
 using MyCRM_Online.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using MyCRM_Online.ViewModels.Orders;
 using MyCRM_Online.ViewModels.Clients;
 using Newtonsoft.Json;
-using System.Net.Http;
 using MyCRM_Online.Extensions;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Http;
 
 namespace MyCRM_Online.Controllers
 {
     [Authorize]
     public class OrdersController : Controller
     {
-        private readonly DataContext dataContext;
-        private readonly IMapper mapper;
         private readonly IDateTimeProvider dateTimeProvider;
         private readonly HttpClient httpClient;
 
-        public OrdersController(DataContext dataContext, IMapper mapper, IDateTimeProvider dateTimeProvider, IHttpClientFactory factory)
+        public OrdersController(IDateTimeProvider dateTimeProvider, IHttpClientFactory factory)
         {
-            this.dataContext = dataContext;
-            this.mapper = mapper;
             this.dateTimeProvider = dateTimeProvider;
             this.httpClient = factory.CreateClient("apiClient");
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
         {
             var pageInfo = new PageInfo<OrderViewModel>();
 
-            using (var response = await httpClient.GetAsync($"/api/orders?page={page}"))
+            using (var response = await httpClient.GetAsync($"api/orders?page={page}&pageSize={pageSize}"))
             {
                 response.ThrowOnHttpError();
 
@@ -75,7 +61,7 @@ namespace MyCRM_Online.Controllers
 
             var createdOrder = new OrderViewModel();
 
-            using (var response = await httpClient.PostAsync($"/api/orders", httpContent))
+            using (var response = await httpClient.PostAsync($"api/orders", httpContent))
             {
                 response.ThrowOnHttpError();
 
@@ -95,7 +81,7 @@ namespace MyCRM_Online.Controllers
 
             OrderViewModel createdOrder;
 
-            using (var response = await httpClient.PostAsync($"/api/orders", httpContent))
+            using (var response = await httpClient.PostAsync($"api/orders", httpContent))
             {
                 response.ThrowOnHttpError();
 
@@ -116,7 +102,7 @@ namespace MyCRM_Online.Controllers
 
             OrderEditViewModel order;
 
-            using (var response = await httpClient.GetAsync($"/api/orders/{id}"))
+            using (var response = await httpClient.GetAsync($"api/orders/{id}"))
             {
                 response.ThrowOnHttpError();
 
@@ -146,7 +132,7 @@ namespace MyCRM_Online.Controllers
             var serializedOrder = JsonConvert.SerializeObject(order, Formatting.Indented);
             var httpContent = new StringContent(serializedOrder, Encoding.UTF8, "application/json");
 
-            using (var response = await httpClient.PutAsync($"/api/orders", httpContent)) {
+            using (var response = await httpClient.PutAsync($"api/orders", httpContent)) {
                 response.ThrowOnHttpError();
             }
 
@@ -160,7 +146,7 @@ namespace MyCRM_Online.Controllers
                 return NotFound();
             }
 
-            using (var response = await httpClient.DeleteAsync($"/api/orders/{id}")) {
+            using (var response = await httpClient.DeleteAsync($"api/orders/{id}")) {
                 response.ThrowOnHttpError();
             }
 
@@ -171,7 +157,7 @@ namespace MyCRM_Online.Controllers
         {
             IEnumerable<ClientViewModel> clients;
 
-            using (var response = await httpClient.GetAsync($"/api/clients/list"))
+            using (var response = await httpClient.GetAsync($"api/clients/list"))
             {
                 response.ThrowOnHttpError();
 
@@ -186,7 +172,7 @@ namespace MyCRM_Online.Controllers
         {
             IEnumerable<OrderStatusEntity> orderStatuses;
 
-            using (var response = await httpClient.GetAsync($"/api/orderstatuses/list"))
+            using (var response = await httpClient.GetAsync($"api/orderstatuses/list"))
             {
                 response.ThrowOnHttpError();
 

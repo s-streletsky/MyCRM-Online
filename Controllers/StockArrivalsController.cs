@@ -1,45 +1,31 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using MyCRM_Online.Db;
+﻿using Microsoft.AspNetCore.Mvc;
 using MyCRM_Online.Models.Entities;
 using MyCRM_Online.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using MyCRM_Online.ViewModels.StockArrivals;
 using Microsoft.AspNetCore.Authorization;
-using MyCRM_Online.ViewModels.StockItems;
 using Newtonsoft.Json;
-using System.Net.Http;
 using MyCRM_Online.Extensions;
-using MyCRM_Online.ViewModels.Clients;
 
 namespace MyCRM_Online.Controllers
 {
     [Authorize]
     public class StockArrivalsController : Controller
     {
-        private readonly DataContext dataContext;
-        private readonly IMapper mapper;
         private readonly IDateTimeProvider dateTimeProvider;
         private readonly HttpClient httpClient;
 
-        public StockArrivalsController(DataContext dataContext, IMapper mapper, IDateTimeProvider dateTimeProvider, IHttpClientFactory factory)
+        public StockArrivalsController(IDateTimeProvider dateTimeProvider, IHttpClientFactory factory)
         {
-            this.dataContext = dataContext;
-            this.mapper = mapper;
             this.dateTimeProvider = dateTimeProvider;
             this.httpClient = factory.CreateClient("apiClient");
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
         {
             var pageInfo = new PageInfo<StockArrivalViewModel>();
 
-            using (var response = await httpClient.GetAsync($"/api/stockarrivals?page={page}")) {
+            using (var response = await httpClient.GetAsync($"api/stockarrivals?page={page}&pageSize={pageSize}")) {
                 response.ThrowOnHttpError();
 
                 var apiResponse = await response.Content.ReadAsStringAsync();
@@ -69,7 +55,7 @@ namespace MyCRM_Online.Controllers
             var serializedStockArrival = JsonConvert.SerializeObject(stockArrival, Formatting.Indented);
             var httpContent = new StringContent(serializedStockArrival, Encoding.UTF8, "application/json");
 
-            using (var response = await httpClient.PostAsync($"/api/stockarrivals", httpContent)) {
+            using (var response = await httpClient.PostAsync($"api/stockarrivals", httpContent)) {
                 response.ThrowOnHttpError();
             }
 
@@ -85,7 +71,7 @@ namespace MyCRM_Online.Controllers
 
             StockArrivalEditViewModel stockArrival;
 
-            using (var response = await httpClient.GetAsync($"/api/stockarrivals/{id}"))
+            using (var response = await httpClient.GetAsync($"api/stockarrivals/{id}"))
             {
                 response.ThrowOnHttpError();
 
@@ -115,7 +101,7 @@ namespace MyCRM_Online.Controllers
             var serializedStockArrival = JsonConvert.SerializeObject(stockArrival, Formatting.Indented);
             var httpContent = new StringContent(serializedStockArrival, Encoding.UTF8, "application/json");
 
-            using (var response = await httpClient.PutAsync($"/api/stockarrivals", httpContent)) {
+            using (var response = await httpClient.PutAsync($"api/stockarrivals", httpContent)) {
                 response.ThrowOnHttpError();
             }
 
@@ -129,7 +115,7 @@ namespace MyCRM_Online.Controllers
                 return NotFound();
             }
 
-            using (var response = await httpClient.DeleteAsync($"/api/stockarrivals/{id}")) {
+            using (var response = await httpClient.DeleteAsync($"api/stockarrivals/{id}")) {
                 response.ThrowOnHttpError();
             }
 
@@ -140,7 +126,7 @@ namespace MyCRM_Online.Controllers
         {
             IEnumerable<StockItemEntity> stockItems;
 
-            using (var response = await httpClient.GetAsync($"/api/stockitems/list")) {
+            using (var response = await httpClient.GetAsync($"api/stockitems/list")) {
                 response.ThrowOnHttpError();
 
                 var apiResponse = await response.Content.ReadAsStringAsync();

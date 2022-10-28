@@ -1,45 +1,30 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyCRM_Online.Db;
 using MyCRM_Online.Models.Entities;
 using MyCRM_Online.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using MyCRM_Online.Processors;
 using MyCRM_Online.ViewModels.StockItems;
-using MyCRM_Online.ViewModels.Clients;
 using Newtonsoft.Json;
-using System.Net.Http;
 using MyCRM_Online.Extensions;
 using MyCRM_Online.ViewModels.Currencies;
-using MyCRM_Online.ViewModels.Manufacturers;
 
 namespace MyCRM_Online.Controllers
 {
     [Authorize]
     public class StockItemsController : Controller
     {
-        private readonly DataContext dataContext;
-        private readonly IMapper mapper;
         private readonly HttpClient httpClient;
 
-        public StockItemsController(DataContext dataContext, IMapper mapper, IHttpClientFactory factory)
+        public StockItemsController(IHttpClientFactory factory)
         {
-            this.dataContext = dataContext;
-            this.mapper = mapper;
             this.httpClient = factory.CreateClient("apiClient");
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
         {
             var pageInfo = new PageInfo<StockItemViewModel>();
 
-            using (var response = await httpClient.GetAsync($"/api/stockitems?page={page}"))
+            using (var response = await httpClient.GetAsync($"api/stockitems?page={page}&pageSize={pageSize}"))
             {
                 response.ThrowOnHttpError();
 
@@ -72,7 +57,7 @@ namespace MyCRM_Online.Controllers
             var serializedStockItem = JsonConvert.SerializeObject(stockItem, Formatting.Indented);
             var httpContent = new StringContent(serializedStockItem, Encoding.UTF8, "application/json");
 
-            using (var response = await httpClient.PostAsync($"/api/stockitems", httpContent)) {
+            using (var response = await httpClient.PostAsync($"api/stockitems", httpContent)) {
                 response.ThrowOnHttpError();
             }
 
@@ -88,7 +73,7 @@ namespace MyCRM_Online.Controllers
 
             StockItemEditViewModel stockItem;
 
-            using (var response = await httpClient.GetAsync($"/api/stockitems/{id}")) {
+            using (var response = await httpClient.GetAsync($"api/stockitems/{id}")) {
                 response.ThrowOnHttpError();
 
                 var apiResponse = await response.Content.ReadAsStringAsync();
@@ -116,7 +101,7 @@ namespace MyCRM_Online.Controllers
             var serializedStockItem = JsonConvert.SerializeObject(stockItem, Formatting.Indented);
             var httpContent = new StringContent(serializedStockItem, Encoding.UTF8, "application/json");
 
-            using (var response = await httpClient.PutAsync($"/api/stockitems", httpContent)) {
+            using (var response = await httpClient.PutAsync($"api/stockitems", httpContent)) {
                 response.ThrowOnHttpError();
             }
 
@@ -130,7 +115,7 @@ namespace MyCRM_Online.Controllers
                 return NotFound();
             }
 
-            using (var response = await httpClient.DeleteAsync($"/api/stockitems/{id}")) {
+            using (var response = await httpClient.DeleteAsync($"api/stockitems/{id}")) {
                 response.ThrowOnHttpError();
             }
 
@@ -141,7 +126,7 @@ namespace MyCRM_Online.Controllers
         {
             IEnumerable<ManufacturerEntity> manufacturers;
 
-            using (var response = await httpClient.GetAsync($"/api/manufacturers/list"))
+            using (var response = await httpClient.GetAsync($"api/manufacturers/list"))
             {
                 response.ThrowOnHttpError();
 
@@ -156,7 +141,7 @@ namespace MyCRM_Online.Controllers
         {
             IEnumerable<CurrencyViewModel> currencies;
 
-            using (var response = await httpClient.GetAsync($"/api/currencies/list"))
+            using (var response = await httpClient.GetAsync($"api/currencies/list"))
             {
                 response.ThrowOnHttpError();
 

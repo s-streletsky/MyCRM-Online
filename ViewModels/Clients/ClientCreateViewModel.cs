@@ -1,10 +1,4 @@
-﻿using MyCRM_Online.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace MyCRM_Online.ViewModels.Clients
 {
@@ -41,7 +35,7 @@ namespace MyCRM_Online.ViewModels.Clients
         public int? ShippingMethodId { get; set; }
 
 
-        [RegularExpression(@"^[A-Za-z0-9-]{3,20}$", ErrorMessage = "PostalCodeAllowedCharacters")]
+        [RegularExpression(@"^[A-Za-z0-9-]{1,20}$", ErrorMessage = "PostalCodeAllowedCharacters")]
         public string? PostalCode { get; set; }
 
 

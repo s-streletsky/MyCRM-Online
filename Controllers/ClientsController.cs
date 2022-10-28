@@ -1,20 +1,11 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Localization;
-using MyCRM_Online.Db;
 using MyCRM_Online.Extensions;
 using MyCRM_Online.Models;
 using MyCRM_Online.Models.Entities;
 using MyCRM_Online.ViewModels.Clients;
 using Newtonsoft.Json;
-using System.Diagnostics;
-using System.Drawing.Printing;
-using System.Net.Http;
-using System.Net.Http.Json;
 using System.Text;
 
 namespace MyCRM_Online.Controllers
@@ -22,24 +13,20 @@ namespace MyCRM_Online.Controllers
     [Authorize]
     public class ClientsController : Controller
     {
-        private readonly DataContext dataContext;
-        private readonly IMapper mapper;
         private readonly IDateTimeProvider dateTimeProvider;
         private readonly HttpClient httpClient;
 
-        public ClientsController(DataContext dataContext, IMapper mapper, IDateTimeProvider dateTimeProvider, IHttpClientFactory factory)
+        public ClientsController(IDateTimeProvider dateTimeProvider, IHttpClientFactory factory)
         {
-            this.dataContext = dataContext;
-            this.mapper = mapper;
             this.dateTimeProvider = dateTimeProvider;
             this.httpClient = factory.CreateClient("apiClient");
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
         {
             var pageInfo = new PageInfo<ClientViewModel>();
 
-            using (var response = await httpClient.GetAsync($"/api/clients?page={page}"))
+            using (var response = await httpClient.GetAsync($"api/clients?page={page}&pageSize={pageSize}"))
             {
                 response.ThrowOnHttpError();
 
@@ -50,10 +37,10 @@ namespace MyCRM_Online.Controllers
             return View(pageInfo);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            SetAllCountriesListToViewBag();
-            SetAllShippingMethodsListToViewBag();
+            await SetAllCountriesListToViewBagAsync();
+            await SetAllShippingMethodsListToViewBagAsync();
 
             return View(); 
         }
@@ -64,8 +51,8 @@ namespace MyCRM_Online.Controllers
         {
             if (!ModelState.IsValid)
             {
-                SetAllCountriesListToViewBag();
-                SetAllShippingMethodsListToViewBag();
+                await SetAllCountriesListToViewBagAsync();
+                await SetAllShippingMethodsListToViewBagAsync();
 
                 return View(client);                
             }
@@ -73,7 +60,7 @@ namespace MyCRM_Online.Controllers
             var serializedClient = JsonConvert.SerializeObject(client, Formatting.Indented);
             var httpContent = new StringContent(serializedClient, Encoding.UTF8, "application/json");
 
-            using (var response = await httpClient.PostAsync($"/api/clients", httpContent))
+            using (var response = await httpClient.PostAsync($"api/clients", httpContent))
             {
                 response.ThrowOnHttpError();
             }
@@ -90,7 +77,7 @@ namespace MyCRM_Online.Controllers
 
             ClientEditViewModel client;
 
-            using (var response = await httpClient.GetAsync($"/api/clients/{id}"))
+            using (var response = await httpClient.GetAsync($"api/clients/{id}"))
             {
                 response.ThrowOnHttpError();
 
@@ -98,8 +85,8 @@ namespace MyCRM_Online.Controllers
                 client = JsonConvert.DeserializeObject<ClientEditViewModel>(apiResponse);
             }
 
-            SetAllCountriesListToViewBag();
-            SetAllShippingMethodsListToViewBag();
+            await SetAllCountriesListToViewBagAsync();
+            await SetAllShippingMethodsListToViewBagAsync();
 
             return View(client);
         }
@@ -113,8 +100,8 @@ namespace MyCRM_Online.Controllers
             }
 
             if (!ModelState.IsValid) {
-                SetAllCountriesListToViewBag();
-                SetAllShippingMethodsListToViewBag();
+                await SetAllCountriesListToViewBagAsync();
+                await SetAllShippingMethodsListToViewBagAsync();
 
                 return View(client);                
             }
@@ -122,7 +109,7 @@ namespace MyCRM_Online.Controllers
             var serializedClient = JsonConvert.SerializeObject(client, Formatting.Indented);
             var httpContent = new StringContent(serializedClient, Encoding.UTF8, "application/json");
 
-            using (var response = await httpClient.PutAsync($"/api/clients", httpContent))
+            using (var response = await httpClient.PutAsync($"api/clients", httpContent))
             {
                 response.ThrowOnHttpError();
             }
@@ -134,7 +121,7 @@ namespace MyCRM_Online.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete([FromForm] int id)
         {
-            using (var response = await httpClient.DeleteAsync($"/api/clients/{id}"))
+            using (var response = await httpClient.DeleteAsync($"api/clients/{id}"))
             {
                 response.ThrowOnHttpError();
             }
@@ -146,7 +133,7 @@ namespace MyCRM_Online.Controllers
         {
             ClientProfileViewModel client;
 
-            using (var response = await httpClient.GetAsync($"/api/clients/{id}/profile"))
+            using (var response = await httpClient.GetAsync($"api/clients/{id}/profile"))
             {
                 response.ThrowOnHttpError();
 
@@ -170,15 +157,33 @@ namespace MyCRM_Online.Controllers
             return LocalRedirect(returnUrl);
         }
 
-        private void SetAllCountriesListToViewBag()
+        private async Task SetAllCountriesListToViewBagAsync()
         {
-            var countries = dataContext.Countries.ToList();            
+            IEnumerable<CountryEntity> countries;
+
+            using (var response = await httpClient.GetAsync($"api/countries/list"))
+            {
+                response.ThrowOnHttpError();
+
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                countries = JsonConvert.DeserializeObject<IEnumerable<CountryEntity>>(apiResponse);
+            }
+
             ViewBag.Countries = countries;            
         }
 
-        private void SetAllShippingMethodsListToViewBag()
+        private async Task SetAllShippingMethodsListToViewBagAsync()
         {
-            var shippingMethods = dataContext.ShippingMethods.ToList();
+            IEnumerable<ShippingMethodEntity> shippingMethods;
+
+            using (var response = await httpClient.GetAsync($"api/shippingmethods/list"))
+            {
+                response.ThrowOnHttpError();
+
+                var apiResponse = await response.Content.ReadAsStringAsync();
+                shippingMethods = JsonConvert.DeserializeObject<IEnumerable<ShippingMethodEntity>>(apiResponse);
+            }
+
             ViewBag.ShippingMethods = shippingMethods;
         }
     }
